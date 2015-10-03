@@ -6,22 +6,59 @@ define(
         'async',
         'bcrypt',
         'crypto',
-        '../../database/account-db',
+        '../../database/auth-db-api',
         '../utilities/mail-handler',
     ], 
-    function (async, bcrypt, crypto, accountDb, mailHandler) {
+    function (async, bcrypt, crypto, authDbApi, mailHandler) {
         var bcrypt = require('bcrypt'),
             SALT_WORK_FACTOR = 10,
-            debug = require('debug')('myApp:auth-api-handlers');
+            debug = require('debug')('nammapolice:auth-api-handlers');
 
 
-        function signup(req, responseCallback){
-            debug('api-handler signup');
+        function checkForCitizen(req, responseCallback){
+            authDbApi.getCitizenDetails(req.body, function(err, resultData){
+                var responseData = {};
+                if(err){
+                    debug(err);
+                }else{
+                    if(resultData.phone){
+                        responseData = {
+                            status: 'notavailable'
+                        }
+                    }else{
+                        responseData = {
+                            status: 'available'
+                        }
+                    }
+                }
+                responseCallback(responseData);
+            });
+        }
+
+        function checkForPolice(req, responseCallback){
+            authDbApi.getPoliceDetails(req.body, function(err, resultData){
+                var responseData = {};
+                if(err){
+                    debug(err);
+                }else{
+                    if(resultData.policeid){
+                        responseData = {
+                            status: 'notavailable'
+                        }
+                    }else{
+                        responseData = {
+                            status: 'available'
+                        }
+                    }
+                }
+                responseCallback(responseData);
+            });
+        }
+
+        function registerNewCitizen(req, responseCallback){
+            debug('api-handler registerNewCitizen');
 
             var reqObj = req.body;
-                reqObj.userName = req.body.userName.toLowerCase();
-
-            reqObj.displayName = reqObj.displayName;
 
             var token = crypto.randomBytes(15).toString('hex');
             reqObj.token = token;
@@ -37,117 +74,217 @@ define(
              
                     // override the cleartext password with the hashed one
                     reqObj.password = hash;
-                    accountDb.registerNewUser(reqObj, responseCallback);
+                    authDbApi.registerNewCitizen(reqObj, function(err, resultData){
+                        if(err){
+                            debug(err);
+                        }else{
+                            resultData = {
+                                userId: resultData.phone,
+                                displayName: resultData.displayName,
+                                status: 'loggedIn',
+                                userType: 'citizen'
+                            };
+
+                            responseCallback(resultData);
+                        }
+                    });
                 });
             });
 
-            var messageBody = 'Welcome!';
+            // var messageBody = 'Welcome!';
 
-            debug(messageBody);
+            // debug(messageBody);
 
-            mailHandler.sendEmail('My-App <notification@myApp.org>', [reqObj.email], null, 'Welcome to My App', messageBody, function(err, result){
-                if(err){
-                    debug(err);
-                }else{
-                    debug(result);
-                }               
-            });
+            // mailHandler.sendEmail('My-App <notification@myApp.org>', [reqObj.email], null, 'Welcome to My App', messageBody, function(err, result){
+            //     if(err){
+            //         debug(err);
+            //     }else{
+            //         debug(result);
+            //     }               
+            // });
         }    
 
-        function login(req, responseCallback){
-            debug('api-handler login');
+        function registerNewPolice(req, responseCallback){
+            debug('api-handler registerNewPolice');
+
+            var reqObj = req.body;
+
+            var token = crypto.randomBytes(15).toString('hex');
+            reqObj.token = token;
+
+            bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+                if (err){
+                    debug(err);
+                }
+
+                // hash the password using our new salt
+                bcrypt.hash(reqObj.password, salt, function(err, hash) {
+                    if (err) return next(err);
+             
+                    // override the cleartext password with the hashed one
+                    reqObj.password = hash;
+                    authDbApi.registerNewPolice(reqObj, function(err, resultData){
+                        if(err){
+                            debug(err);
+                        }else{
+                            resultData = {
+                                userId: resultData.policeId,
+                                displayName: resultData.displayName,
+                                status: 'loggedIn',
+                                userType: 'police'
+                            };
+                            responseCallback(resultData);
+                        }
+                    });
+                });
+            });
+        }  
+
+        function loginCitizen(req, responseCallback){
+            debug('api-handler loginCitizen');
             debug(req.body);
             var reqObj = req.body;
 
             async.series(
-                {
-                    one: function (callback) {
-                        accountDb.checkForUser(reqObj, callback);
+                [
+                    function (callback) {
+                        authDbApi.getCitizenDetails(reqObj, callback);
                     }
-                },
+                ],
                 function(err, results){
                     if(err){
                         debug(err);
                     }else{
-                        var responseData = {};
-
-                        if(results.one.message){
-                            responseData = {
-                                status: 'incorrect username'
-                            };
-                            responseCallback(responseData);                      
-                        
-                        }else{
-                            bcrypt.compare(reqObj.password, results.one.password, function(err, res) {
+                        console.log(results);
+                        var resultData = {};
+                        if(results[0].phone){
+                            bcrypt.compare(req.body.password, results[0].password, function(err, res) {
                                 if (err){
                                     debug(err);
                                 }else{
                                     if(res){
-                                        var displayPicture = null, coverPicture = null;
-                                        if(results.one.displayPictures){
-                                            displayPicture = results.one.displayPictures[0]
-                                        }
-                                        if(results.one.coverPictures){
-                                            coverPicture = results.one.coverPictures[0]
-                                        }
-
-                                        responseData = {
-                                            userName: reqObj.userName,
-                                            displayName: results.one.displayName,
-                                            userPrivilege: results.one.userPrivilege,
+                                        debug('success')
+                                        resultData = {
+                                            userId: results[0].phone,
+                                            displayName: results[0].displayName,
                                             status: 'loggedIn',
-                                            displayPicture: displayPicture,
-                                            coverPicture: coverPicture
-                                        };
+                                            userType: 'citizen'
+                                        }
                                     }else{
-                                        responseData = {
-                                            status: 'unlogged'
-                                        };
+                                        debug('failure');
+                                        resultData = {
+                                            userId: null,
+                                            displayName: null,
+                                            status: null,
+                                            userType: null
+                                        }
                                     }
 
-                                    responseCallback(responseData);
+                                    responseCallback(resultData);
                                 }
                             });
+                        }else{
+                            resultData = {
+                                userId: null,
+                                displayName: null,
+                                status: null,
+                                userType: null
+                            }
+                            responseCallback(resultData);
                         }
                     }
                 }
             );
         }
 
-        function checkUserName(req, responseCallback){
-            debug('api-handler checkUserName');
-            
-            var reqObj = {};
-            reqObj.userName = req.body.userName;
-            
-            accountDb.checkForUser(reqObj, responseCallback);
+        function loginPolice(req, responseCallback){
+            debug('api-handler loginPolice');
+            debug(req.body);
+            var reqObj = req.body;
+
+            async.series(
+                [
+                    function (callback) {
+                        authDbApi.getPoliceDetails(reqObj, callback);
+                    }
+                ],
+                function(err, results){
+                    if(err){
+                        debug(err);
+                    }else{
+                        var resultData = {};
+                        if(results[0].policeId){
+                            bcrypt.compare(req.body.password, results[0].password, function(err, res) {
+                                if (err){
+                                    debug(err);
+                                }else{
+                                    if(res){
+                                        debug('success')
+                                        resultData = {
+                                            userId: results[0].policeId,
+                                            displayName: results[0].displayName,
+                                            status: 'loggedIn',
+                                            userType: 'police'
+                                        }
+                                    }else{
+                                        debug('failure');
+                                        resultData = {
+                                            userId: null,
+                                            displayName: null,
+                                            status: null,
+                                            userType: null
+                                        }
+                                    }
+
+                                    responseCallback(resultData);
+                                }
+                            });
+                        }else{
+                            resultData = {
+                                userId: null,
+                                displayName: null,
+                                status: null,
+                                userType: null
+                            }
+                            responseCallback(resultData);
+                        }
+                    }
+                }
+            );
         }
 
-        homeRender = function(req, url, responseCallback){
+        function homeRender(req, responseCallback){
             debug('inside homeRender');
             var argOne = 'index',
                 argTwo = {};
-                
-            if(req.session.user != null){
+            console.log(req.session.user);
+            if(req.session.user){
                 argTwo = {
-                    user_name: req.session.user.userName,
-                };
-
-                responseCallback(argOne, argTwo);                         
+                    user_id: req.session.user.userId,
+                    status: req.session.user.status,
+                    display_name: req.session.user.displayName,
+                    user_type: req.session.user.userType
+                };                        
             }
             else {
                 argTwo = {
-                    user_name: null
+                    user_id: null,
+                    status: null,
+                    display_name: null,
+                    user_type: null
                 };
-
-                responseCallback(argOne, argTwo);
             }
+
+            responseCallback(argOne, argTwo);
         };
         
         return {
-            signup: signup,
-            login: login,
-            checkUserName: checkUserName,
+            checkForCitizen: checkForCitizen,
+            checkForPolice: checkForPolice,
+            registerNewCitizen: registerNewCitizen,
+            registerNewPolice: registerNewPolice,
+            loginCitizen: loginCitizen,
+            loginPolice: loginPolice,
             homeRender: homeRender
         }
     }

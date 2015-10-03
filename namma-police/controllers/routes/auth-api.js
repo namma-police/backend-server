@@ -10,7 +10,81 @@ define(
         function initialize(expressInstance) {
             //passport configurations
             var app = expressInstance,
-                debug = require('debug')('myApp:auth-api');
+                debug = require('debug')('nammapolice:auth-api');
+
+            app.post('/citizen/phone/verify', function(req, res){
+                debug('Inside /citizen/phone/verify');
+                authApiHandlers.checkForCitizen(req, function(responseData){
+                    res.json(responseData);
+                });
+            });   
+
+            app.post('/police/id/verify', function(req, res){
+                debug('Inside /police/id/verify');
+                authApiHandlers.checkForPolice(req, function(responseData){
+                    res.json(responseData);
+                });
+            }); 
+
+            app.post('/citizen/signup', function(req, res){
+                debug('inside /citizen/signup');
+                authApiHandlers.registerNewCitizen(req, function(responseData){
+                    req.session.regenerate(function(){
+                        req.session.user = responseData;
+                    
+                        res.json(responseData);                          
+                    });
+                });
+            });
+
+            app.post('/police/signup', function(req, res){
+                debug('inside /police/signup');
+                authApiHandlers.registerNewPolice(req, function(responseData){
+                    req.session.regenerate(function(){
+                        req.session.user = responseData;
+            
+                        res.json(responseData);                          
+                    });
+                });
+            });
+
+            app.post('/citizen/login', function (req, res){
+                debug('Inside /citizen/login');
+                authApiHandlers.loginCitizen(req, function(responseData){                   
+                    if(responseData.status === 'loggedIn'){
+                        debug(responseData);
+
+                        req.session.regenerate(function(){
+                            req.session.user = responseData;
+                        
+                            res.json(responseData);                          
+                        });
+                    }else{
+                        res.json({
+                            status: 'invalid'
+                        })
+                    }
+                });
+            });
+
+            app.post('/police/login', function (req, res){
+                debug('Inside /police/login');
+                authApiHandlers.loginPolice(req, function(responseData){                   
+                    if(responseData.status === 'loggedIn'){
+                        debug(responseData);
+
+                        req.session.regenerate(function(){
+                            req.session.user = responseData;
+                        
+                            res.json(responseData);                          
+                        });
+                    }else{
+                        res.json({
+                            status: 'invalid'
+                        });
+                    }
+                });
+            });
 
             app.get('/logout', function (req, res) {
                 debug('request to /logout');
@@ -19,33 +93,9 @@ define(
                 });
             });
 
-            app.post('/login', function (req, res){
-                debug('Inside login');
-                authApiHandlers.login(req, function(responseData){                   
-                    if(responseData.status === 'loggedIn'){
-                        debug(responseData);
-
-                        req.session.regenerate(function(){
-                            req.session.user = {
-                                userName: responseData.userName,
-                                displayName: responseData.displayName,
-                                displayPicture: responseData.displayPicture,
-                                coverPicture: responseData.coverPicture,
-                                userPrivilege: responseData.userPrivilege,
-                                status: responseData.status
-                            };
-                        
-                            res.json(responseData);                          
-                        });
-                    }else{
-                        res.json(responseData);
-                    }
-                });
-            });
-
             app.get('/', function (req, res) {
                 debug('request to /');
-                authApiHandlers.homeRender(req, 'all', function(argOne, argTwo){
+                authApiHandlers.homeRender(req, function(argOne, argTwo){
                     res.render(argOne, argTwo);
                 });
             });
