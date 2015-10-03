@@ -11,7 +11,7 @@ define(
         function configure(callback) {
             that.MongoClient = mongodb.MongoClient,
                 Server = mongodb.Server;
-            var server = 'mongodb://localhost:27017/test';
+            var server = 'mongodb://localhost:27017/nammapolice';
 
             that.MongoClient.connect(server, function(err, db){
                 if(err){

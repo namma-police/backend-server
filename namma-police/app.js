@@ -26,7 +26,7 @@ requirejs(
 	], 
 	function(http, https, async, fs, express, config, expressConfigs, configCassandra, configRedis, configMongodb){
 		var expressInstance = expressConfigs.configure(),
-			debug = require('debug')('myApp:app');
+			debug = require('debug')('nammapolice:app');
 
 		// var privateKey  = fs.readFileSync('ssl-certs-1/my-ssl-certifications/host.key', 'utf8'),
 		// 	certificate = fs.readFileSync('ssl-certs-1/f5bbd28d4c33691b.crt', 'utf8'),
@@ -79,10 +79,9 @@ requirejs(
 		    
 			async.parallel(
 				[
-					function(callback){
-						configCassandra.configure(callback);
-						
-					},
+					// function(callback){
+					// 	configCassandra.configure(callback);	
+					// },
 					function(callback){
 						configRedis.configure(callback);
 					},

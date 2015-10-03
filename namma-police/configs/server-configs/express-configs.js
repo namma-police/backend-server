@@ -20,7 +20,7 @@ define(
                 busboy = require('connect-busboy'),
                 _ = require('underscore'),
                 consolidate = require('consolidate'),
-                debug = require('debug')('myApp:express-configs');
+                debug = require('debug')('nammapolice:express-configs');
 
             var expressInstance = express(),
                 options = {
