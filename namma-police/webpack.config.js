@@ -25,7 +25,7 @@ var config = {
     plugins: [
         new webpack.ProvidePlugin({
             jQuery: "jquery",
-            'window.jQuery': "jquery"
+            'window.jQuery': "jquery",
         }),
         new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js', Infinity),
 
