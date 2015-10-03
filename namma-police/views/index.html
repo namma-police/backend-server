@@ -4,14 +4,26 @@
 		<meta charset = "utf-8"/>
 		<link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
 	</head>
-	<body>
-		<div id="usernameHeader" data-request="<%= user_name %>">	
-			<%= user_name %>		
-		</div>
-		<h2 id="mainHeader">A skeleton for app building using Node, Mongo, React and Webpack</h2>
+	<body data-userid="<%= user_id %>" 
+		data-status="<%= status %>" 
+		data-display-name="<%= display_name %>" 
+		data-user-type="<%= user_type %>">
+
+		<h2 id="mainHeader">Welcome to Namma-Police</h2>
 		<div id="componentContainer">
 		</div>
 	</body>
+	<style type="text/css">
+		#location-map{
+			width: 600px;
+			height:400px;
+		}
+	</style>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+	  var socket = io();
+	</script>
+	<script src="/js/libs/script.js"></script>
 	<script src="/js/vendors.js"></script>
 	<script type="text/javascript" src="/js/bundled-app.js"></script>
 </html>	
