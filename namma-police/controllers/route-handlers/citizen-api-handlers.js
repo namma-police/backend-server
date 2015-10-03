@@ -72,9 +72,12 @@ define(
                         googleMapsApi.getlatLngDetails(req.body.coordinates, callback);       
                     }],
                     four: ['three', function(callback, results){
+                        var date = new Date();
                         var reqObj = {
+                            occurrenceTime: date.getTime(),
                             citizenId: req.session.user.userId,
                             location: {
+                                type: "Point",
                                 address: results.three.results[0].formatted_address,
                                 coordinates: [Number(req.body.coordinates[1]), Number(req.body.coordinates[0])]
                             }

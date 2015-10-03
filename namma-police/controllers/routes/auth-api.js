@@ -5,15 +5,12 @@ define(
     [
         '../route-handlers/auth-api-handlers',
         '../route-handlers/citizen-api-handlers'
-        //'passport',
     ],
     function(authApiHandlers, citizenApiHandlers) {
         function initialize(expressInstance, io, socket) {
             //passport configurations
             var app = expressInstance,
-                debug = require('debug')('nammapolice:auth-api');
-
-            
+                debug = require('debug')('nammapolice:auth-api');     
 
             socket.on('police-online', function(postData){
                 debug('a police is online at');
