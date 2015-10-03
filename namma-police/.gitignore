@@ -1,0 +1,4 @@
+#This file will tell Git to ignore the node_modules directory. Once you pull the code, please run npm install to install all necessary node modules  in your system
+
+node_modules/**
+bower_components/**

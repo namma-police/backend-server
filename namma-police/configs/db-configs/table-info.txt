@@ -1,0 +1,74 @@
+keyspace 
+	myapp_db
+  CREATE KEYSPACE myapp_db WITH replication = {   'class':'SimpleStrategy', 'replication_factor' : 1 };
+
+********************Column families********************************
+
+
+CREATE TABLE user_profiles (
+    user_name text,
+    android_devices list<text>,
+    cover_pictures list<text>,
+    cover_type text,
+    cover_videos list<text>,
+    cover_youtube_videos list<text>,
+    display_name text,
+    display_pictures list<text>,
+    email_status text,
+    emails set<text>,
+    facebook_data text,
+    gender text,
+    hierarchical_names list<text>,
+    hierarchy_urls list<text>,
+    last_login_date timestamp,
+    password text,
+    phone_numbers set<text>,
+    phone_status text,
+    place_id text,
+    posts int,
+    profile_creation_date timestamp,
+    subscribers int,
+    traction_factor int,
+    trust_factor int,
+    user_privilege text,
+    views int,
+    PRIMARY KEY ((user_name))
+)
+
+
+CREATE TABLE location_posts (
+    location_url text,
+    post_category text,
+    post_date bigint,
+    post_id timeuuid,
+    audio_url text,
+    channel_names list<text>,
+    channel_types list<text>,
+    channel_urls list<text>,
+    display_name text,
+    display_picture text,
+    downvotes int,
+    hierarchical_names list<text>,
+    hierarchy_urls list<text>,
+    link_url text,
+    no_of_comments int,
+    picture_url text,
+    post_content text,
+    user_name text,
+    upvotes int,
+    video_url text,
+    youtube_url text,
+    PRIMARY KEY ((location_url, post_category), post_date, post_id)
+) 
+WITH CLUSTERING ORDER BY (post_date DESC, post_id DESC);
+
+
+
+-------------------------------
+COPY PASTE FOR CONVENIENCE
+
+DROP TABLE user_profiles;
+
+___________________________________________
+
+ALTER TABLE user_profiles ADD picture_url text;
