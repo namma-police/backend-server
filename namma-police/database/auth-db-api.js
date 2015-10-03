@@ -31,6 +31,7 @@ define(
 				}else{
 					if(results){
 						resultData = {
+							citizenId: results.citizenId,
 							phone: results.phone,
 							displayName: results.displayName,
 							email: results.email,
@@ -38,6 +39,7 @@ define(
 						};
 					}else{
 						resultData = {
+							citizenId: null,
 							phone: null,
 							displayName: null,
 							email: null,
@@ -86,10 +88,13 @@ define(
 
 		exports.registerNewCitizen = function(reqObj, callback){
 			mongoDBClient.collection("citizensData").insert({
+				citizenId: reqObj.phone,
 				displayName: reqObj.displayName,
 				phone: reqObj.phone,
 				email: reqObj.email,
-				password: reqObj.password
+				password: reqObj.password,
+				earnedRatings: 5,
+				totalRatings: 5
 			},function(err, results){
 				var resultData = {};
 				if(err){
@@ -100,8 +105,8 @@ define(
 					callback(resultData);
 				}else{
 					resultData = {
-						displayName: reqObj.displayName,
-						phone: reqObj.phone
+						citizenId: reqObj.phone,
+						displayName: reqObj.displayName	
 					}
 					callback(null, resultData);
 				}
@@ -114,7 +119,9 @@ define(
 				displayName: reqObj.displayName,
 				phone: reqObj.phone,
 				email: reqObj.email,
-				password: reqObj.password
+				password: reqObj.password,
+				earnedRatings: 5,
+				totalRatings: 5
 			},function(err, results){
 				var resultData = {};
 				if(err){

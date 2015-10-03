@@ -4,13 +4,21 @@
 define(
     [
         '../route-handlers/auth-api-handlers',
+        '../route-handlers/citizen-api-handlers'
         //'passport',
     ],
-    function(authApiHandlers) {
-        function initialize(expressInstance) {
+    function(authApiHandlers, citizenApiHandlers) {
+        function initialize(expressInstance, io, socket) {
             //passport configurations
             var app = expressInstance,
                 debug = require('debug')('nammapolice:auth-api');
+
+            
+
+            socket.on('police-online', function(postData){
+                debug('a police is online at');
+                debug(postData);
+            });
 
             app.post('/citizen/phone/verify', function(req, res){
                 debug('Inside /citizen/phone/verify');
@@ -57,7 +65,7 @@ define(
                         req.session.regenerate(function(){
                             req.session.user = responseData;
                         
-                            res.json(responseData);                          
+                            res.json(responseData);                         
                         });
                     }else{
                         res.json({

@@ -7,7 +7,7 @@ define(
         //'passport',
     ],
     function(policeApiHandlers) {
-        function initialize(expressInstance) {
+        function initialize(expressInstance, io, socket) {
             //passport configurations
             var app = expressInstance,
                 debug = require('debug')('nammapolice:police-api');
@@ -49,6 +49,11 @@ define(
                     res.json(responseData);
                 });
             });
+
+            // socket.on('online-police-'+req.session.user.userId, function(postData){
+            //     debug('Police is online at ');
+            //     debug(postData);
+            // });
         }
         return {
             initialize: initialize

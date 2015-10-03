@@ -4,11 +4,32 @@
 define(
     [
         'async',
+        'underscore',
         '../../database/citizen-db-api',    
         '../utilities/google-maps-api'
     ], 
-    function (async, citizenDbApi, googleMapsApi) {
-        var debug = require('debug')('nammapolice:auth-api-handlers');
+    function (async, underscore, citizenDbApi, googleMapsApi) {
+        var debug = require('debug')('nammapolice:citizen-api-handlers');
+
+        function getNearbyCops(req, responseCallback){
+            var coordinates = [Number(req.body.coordinates[1]), Number(req.body.coordinates[0])];
+
+            citizenDbApi.getNearestCops(coordinates, function(err, results){
+                if(err){
+                    debug(err);
+                }else{
+                    var resultData = results.map(function(policeDetails){
+                        return {
+                            location: {
+                                address: policeDetails.location.address,
+                                coordinates: [policeDetails.location.coordinates[1], policeDetails.location.coordinates[0]]
+                            }
+                        };
+                    });
+                    responseCallback(resultData);
+                }
+            });
+        }
 
         function requestCop(req, responseCallback){
             debug('api-handler requestCop');
@@ -19,8 +40,8 @@ define(
                     one: function(callback){
                         citizenDbApi.getNearestCops(coordinates, callback);
                     },
-                    two: function(callback){
-                        var resultData = results.one.map(function(policeDetails){
+                    two: ['one', function(callback, results){
+                        var resultArray = results.one.map(function(policeDetails){
                             return {
                                 policeId: policeDetails.policeId,
                                 displayName: policeDetails.displayName,
@@ -28,23 +49,46 @@ define(
                                 location: {
                                     address: policeDetails.location.address,
                                     coordinates: [policeDetails.location.coordinates[1], policeDetails.location.coordinates[0]]
-                                }
+                                },
+                                rating: policeDetails.totalRatings / policeDetails.earnedRatings * 100
                             };
-                        })
-                        responseCallback(resultData);
-                        callback(null, 'Cop info sent');
+                        });
+                        //debug(resultData);
+                        var policeData = underscore.filter(resultArray, function(policeDetails){
+                            return policeDetails.rating >= 50
+                        });
+
+                        if(policeData.length === 0){
+                            policeData = resultArray;
+                        };
+                        var resultData = {
+                            policeData: policeData
+                        };
                         
-                    }
+                        responseCallback(resultData);    
+                        callback(null, resultArray);
+                    }],
+                    three: ['two', function(callback){
+                        googleMapsApi.getlatLngDetails(req.body.coordinates, callback);       
+                    }],
+                    four: ['three', function(callback, results){
+                        var reqObj = {
+                            citizenId: req.session.user.userId,
+                            location: {
+                                address: results.three.results[0].formatted_address,
+                                coordinates: [Number(req.body.coordinates[1]), Number(req.body.coordinates[0])]
+                            }
+                        }
+                        citizenDbApi.registerNewIssue(reqObj, callback);
+                    }]
                 },function(err, results){
                     if(err){
                         debug(err);
                     }else{
-                        citizenDbApi.registerNewIssue(reqObj, callback)
+                        //debug(results);
                     }
                 }    
-            )
-            citizenDbApi.getNearestCops(coordinates, 
-            });
+            );
         }    
 
         function getCopLocation(req, responseCallback){
@@ -91,6 +135,7 @@ define(
         };
         
         return {
+            getNearbyCops: getNearbyCops,
             requestCop: requestCop,
             getCopLocation: getCopLocation,
             endIssue: endIssue,

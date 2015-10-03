@@ -15,7 +15,7 @@ define(
 			mongoDBClient = configMongo.mongoClientDB(),
 			dataTypes = configCassandra.dataTypes(),
 			that = this,
-			debug = require('debug')('nammapolice:account-db');
+			debug = require('debug')('nammapolice:citizen-db-api');
 		
 		exports.updateCitizenLocation = function(reqObj, callback){
 			mongoDBClient.collection("citizensData").ensureIndex( { "location" : "2dsphere" }, function(){
@@ -49,7 +49,6 @@ define(
 		}
 
 		exports.getNearestCops = function(coordinates, callback){
-			debug(coordinates);
 			mongoDBClient.collection("policeData").ensureIndex({ "location" : "2dsphere" }, function(){
 				mongoDBClient.collection("policeData").find({
 					location: {
@@ -68,6 +67,21 @@ define(
 						callback(null, results);
 					}
 				});
+			});
+		}
+
+		exports.registerNewIssue = function(reqObj, callback){
+			mongoDBClient.collection("issuesData").insert({
+				citizenId: reqObj.citizenId,
+				//policeId: reqObj.policeId,
+				citizenLocation: reqObj.location,
+				status: 'active'
+			}, function(err, results){
+				if(err){
+					callback(err);
+				}else{
+					callback(null, results);
+				}
 			});
 		}
 	}

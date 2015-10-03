@@ -79,7 +79,7 @@ define(
                             debug(err);
                         }else{
                             resultData = {
-                                userId: resultData.phone,
+                                userId: resultData.citizenId,
                                 displayName: resultData.displayName,
                                 status: 'loggedIn',
                                 userType: 'citizen'
@@ -165,7 +165,7 @@ define(
                                     if(res){
                                         debug('success')
                                         resultData = {
-                                            userId: results[0].phone,
+                                            userId: results[0].citizenId,
                                             displayName: results[0].displayName,
                                             status: 'loggedIn',
                                             userType: 'citizen'

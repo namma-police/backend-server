@@ -73,8 +73,10 @@ requirejs(
 		// 		next();
 		// 	});
 		// });  
+		var server = http.Server(expressInstance),
+			io = require('socket.io')(server);
 
-		http.createServer(expressInstance).listen(config.development.server_port1, function () {
+		server.listen(config.development.server_port1, function () {
 		    debug('Server running on ' + config.development.server_port1);
 		    
 			async.parallel(
@@ -92,10 +94,12 @@ requirejs(
 					if(err){
 						debug(err);
 					}else{
-						console.log(results);
 						debug(results);
 						requirejs(['controllers/routes'],function(routes){
-							routes.initialize(expressInstance); //dB
+							io.on('connection', function(socket){
+								routes.initialize(expressInstance, io, socket); //dB
+							});
+							
 						});
 					}					
 				}

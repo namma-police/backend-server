@@ -5,7 +5,7 @@ define(
 		'../common-functions'
 	],
 	function(React, MapWidget, commonFunctions){
-		var HomePage = React.createClass({
+		var CitizenPage = React.createClass({
 			getInitialState: function(){
 				return {
 					userId: this.props.userId,
@@ -15,6 +15,10 @@ define(
 			},
 			componentDidMount:function(){
 				console.log('triggered once after initial render');
+
+				socket.on('waiting-for-help', function(postData){
+					console.log(postData);
+				});
 			},
 			processAddress: function(placeInfo){
 				var postData = {
@@ -22,8 +26,7 @@ define(
 				},
 				successCallback = function(data){
 					console.log(data);
-					socket.emit('help-request', postData);
-				};
+				}.bind(this);
 				
 				commonFunctions.makeAjaxPost('/help/request', postData, successCallback);
 				//commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
@@ -46,7 +49,7 @@ define(
 		  			height: '400px'
 		  		};
 			    return (
-			    	<div id="homePage">
+			    	<div id="CitizenPage">
 			    		<button id="logoutButton" onClick={this.logout}>logout</button>
 			    		<div>
 			    			Welcome, {this.state.userId}
@@ -61,6 +64,6 @@ define(
 		  	}
 		});
 
-		return HomePage;
+		return CitizenPage;
 	}
 );

@@ -2,31 +2,33 @@ webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(4);
+	module.exports = __webpack_require__(2);
 
 
 /***/ },
 /* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 			__webpack_require__(1),
-			__webpack_require__(2),
+			__webpack_require__(3),
 			__webpack_require__(5),
-			__webpack_require__(8)
-		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, $, HomePage, LoginPage){	
+			__webpack_require__(6),
+			__webpack_require__(7)
+			
+		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, $, LoginPage, CitizenPage, PolicePage){	
 			console.log('Loaded the Home Page');
 			var documentBody = document.body,
-				userId = documentBody.getAttribute('data-userid');
+				userId = documentBody.getAttribute('data-userid'),
 				userType = documentBody.getAttribute('data-user-type');
 
 			if(userId === ''){
 				React.render(React.createElement(LoginPage, null), document.getElementById('componentContainer'))
-			}else{
-				React.render(React.createElement(HomePage, {userId: userId, userType: userType}), document.getElementById('componentContainer'));
+			}else if(userType === 'citizen'){
+				React.render(React.createElement(CitizenPage, {userId: userId, userType: userType}), document.getElementById('componentContainer'));
+			}else if(userType === 'police'){
+				React.render(React.createElement(PolicePage, {userId: userId, userType: userType}), document.getElementById('componentContainer'));
 			}
 		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
@@ -34,15 +36,171 @@ webpackJsonp([1],[
 	//webpack -p (for production)
 
 /***/ },
+/* 3 */,
+/* 4 */,
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 			__webpack_require__(1),
-			__webpack_require__(6),
-			__webpack_require__(7)
+			__webpack_require__(8)
+		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, commonFunctions){
+			var LoginPage = React.createClass({displayName: "LoginPage",
+				getInitialState: function(){
+					return {
+						userName:'ashwin'
+					}			
+				},
+				componentDidMount:function(){
+					console.log('triggered once after initial render');
+				},
+				verifyCitizenPhone: function(){
+					var citizenPhone = document.getElementById('citizenPhone').value;
+					var postData = {
+						phone: citizenPhone
+					},
+					successcallback = function(data){
+						console.log(data);
+					}
+					commonFunctions.makeAjaxPost('/citizen/phone/verify', postData, successcallback);
+
+				},
+				verifyPoliceId: function(){
+					var policeid = document.getElementById('policeIdInput').value;
+					var postData = {
+						policeid: policeid
+					},
+					successcallback = function(data){
+						console.log(data);
+					}
+					commonFunctions.makeAjaxPost('/police/id/verify', postData, successcallback);
+				},
+				registerCitizen: function(){
+					var displayName = document.getElementById('citizenDisplayNameInput').value,
+						phone = document.getElementById('citizenPhone').value,
+						email = document.getElementById('citizenEmailInput').value,
+						password = document.getElementById('citizenPassword').value;
+
+					var postData = {
+						displayName: displayName,
+						phone: phone,
+						email: email,
+						password: password
+					},
+					successcallback = function(data){
+						console.log(data);
+						window.location.replace('/');
+					};
+
+					commonFunctions.makeAjaxPost('/citizen/signup', postData, successcallback);
+
+				},
+				registerPolice: function(){
+					var displayName = document.getElementById('policeDisplayNameInput').value,
+						policeId = document.getElementById('policeIdInput').value,
+						phone = document.getElementById('policePhone').value,
+						email = document.getElementById('policeEmailInput').value,
+						password = document.getElementById('policePassword').value;
+
+					var postData = {
+						displayName: displayName,
+						policeId: policeId,
+						phone: phone,
+						email: email,
+						password: password
+					},
+					successcallback = function(data){
+						console.log(data);
+						window.location.replace('/');
+					};
+
+					commonFunctions.makeAjaxPost('/police/signup', postData, successcallback);
+				},
+				loginCitizen: function(){
+					var phone = document.getElementById('citizenLoginPhone').value,
+						password = document.getElementById('citizenLoginPassword').value;
+
+					var postData = {
+						phone: phone,
+						password: password
+					},
+					successcallback = function(data){
+						console.log(data);
+						window.location.replace('/');
+					}
+					commonFunctions.makeAjaxPost('/citizen/login', postData, successcallback);
+				},
+				loginPolice: function(){
+					var policeId = document.getElementById('policeLoginId').value,
+						password = document.getElementById('policeLoginPassword').value;
+
+					var postData = {
+						policeId: policeId,
+						password: password
+					},
+					successcallback = function(data){
+						console.log(data);
+						window.location.replace('/');
+					}
+					commonFunctions.makeAjaxPost('/police/login', postData, successcallback);
+				},
+			  	render:function(){
+			  		var style={
+			  			top: '-200px',
+			  			left: '400px',
+			  			position: 'relative'
+			  		},
+			  		that = this;
+
+				    return (
+				    	React.createElement("div", {id: "loginPage"}, 
+				    		React.createElement("div", {id: "citizenSignup"}, 
+				    			React.createElement("div", null, "Citizen Display Name: ", React.createElement("input", {type: "text", id: "citizenDisplayNameInput"}), " "), 
+				    			React.createElement("div", null, "Citizen phone: ", React.createElement("input", {type: "text", id: "citizenPhone", onBlur: that.verifyCitizenPhone})), 
+				    			React.createElement("div", null, "Citizen email: ", React.createElement("input", {type: "text", id: "citizenEmailInput"})), 
+				    			React.createElement("div", null, "Citizen password: ", React.createElement("input", {type: "password", id: "citizenPassword"})), 
+				    			React.createElement("button", {type: "submit", id: "citizenSignupButton", onClick: that.registerCitizen}, "Register")
+				    		), 
+				    		React.createElement("div", {id: "policeSignup"}, 
+				    			React.createElement("div", null, "Police ID: ", React.createElement("input", {type: "text", id: "policeIdInput", onBlur: that.verifyPoliceId}), " "), 
+				    			React.createElement("div", null, "Police display name: ", React.createElement("input", {type: "text", id: "policeDisplayNameInput"}), " "), 
+				    			React.createElement("div", null, "Police phone: ", React.createElement("input", {type: "text", id: "policePhone"})), 
+				    			React.createElement("div", null, "Police email: ", React.createElement("input", {type: "text", id: "policeEmailInput"})), 
+				    			React.createElement("div", null, "Police password: ", React.createElement("input", {type: "password", id: "policePassword"})), 
+				    			React.createElement("button", {type: "submit", id: "policeSignupButton", onClick: that.registerPolice}, " register")
+				    		), 
+				    		React.createElement("div", {style: style}, 
+					    		React.createElement("div", {id: "citizenLogin"}, 
+					    			React.createElement("div", null, "Citizen Login with phone: ", React.createElement("input", {type: "text", id: "citizenLoginPhone"}), " "), 
+					    			React.createElement("div", null, "Password: ", React.createElement("input", {type: "password", id: "citizenLoginPassword"}), " "), 
+					    			React.createElement("button", {type: "submit", id: "citizenLoginButton", onClick: that.loginCitizen}, "Register")
+					    		), 
+
+					    		React.createElement("div", {id: "policeLogin"}, 
+					    			React.createElement("div", null, "Police Login with id: ", React.createElement("input", {type: "text", id: "policeLoginId"}), " "), 
+					    			React.createElement("div", null, "Password: ", React.createElement("input", {type: "password", id: "policeLoginPassword"}), " "), 
+					    			React.createElement("button", {type: "submit", id: "policeLoginButton", onClick: that.loginPolice}, "Register")
+					    		)
+					    	)	
+		 		    	)
+				    );
+			  	}
+			});
+
+			return LoginPage;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+			__webpack_require__(1),
+			__webpack_require__(9),
+			__webpack_require__(8)
 		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, MapWidget, commonFunctions){
-			var HomePage = React.createClass({displayName: "HomePage",
+			var CitizenPage = React.createClass({displayName: "CitizenPage",
 				getInitialState: function(){
 					return {
 						userId: this.props.userId,
@@ -52,6 +210,10 @@ webpackJsonp([1],[
 				},
 				componentDidMount:function(){
 					console.log('triggered once after initial render');
+
+					socket.on('waiting-for-help', function(postData){
+						console.log(postData);
+					});
 				},
 				processAddress: function(placeInfo){
 					var postData = {
@@ -59,7 +221,8 @@ webpackJsonp([1],[
 					},
 					successCallback = function(data){
 						console.log(data);
-					};
+						socket.emit('help-request', postData);
+					}.bind(this);
 					
 					commonFunctions.makeAjaxPost('/help/request', postData, successCallback);
 					//commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
@@ -82,7 +245,7 @@ webpackJsonp([1],[
 			  			height: '400px'
 			  		};
 				    return (
-				    	React.createElement("div", {id: "homePage"}, 
+				    	React.createElement("div", {id: "CitizenPage"}, 
 				    		React.createElement("button", {id: "logoutButton", onClick: this.logout}, "logout"), 
 				    		React.createElement("div", null, 
 				    			"Welcome, ", this.state.userId
@@ -97,12 +260,118 @@ webpackJsonp([1],[
 			  	}
 			});
 
-			return HomePage;
+			return CitizenPage;
 		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 
 /***/ },
-/* 6 */
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+			__webpack_require__(1),
+			__webpack_require__(9),
+			__webpack_require__(8)
+		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, MapWidget, commonFunctions){
+			var PolicePage = React.createClass({displayName: "PolicePage",
+				getInitialState: function(){
+					return {
+						userId: this.props.userId,
+						userType: this.props.userType,
+						currentLocation: null
+					}			
+				},
+				componentDidMount:function(){
+					console.log('triggered once after initial render');
+					//this.props.userId+
+					socket.on(this.props.userId+'-waiting-for-requests', function(postData){
+						console.log(postData);
+					});
+					
+				},
+				processAddress: function(placeInfo){
+					var postData = {
+						coordinates: [placeInfo.geometry.location.lat(),placeInfo.geometry.location.lng()]
+					},
+					successCallback = function(data){
+						console.log(data);
+					};
+					
+					//commonFunctions.makeAjaxPost('/help/request', postData, successCallback);
+					commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
+
+				},
+				logout: function(){
+					window.location.replace('/logout');
+				},
+			  	render:function(){
+			  		var mapOptions = {
+			  			displayMaps: true, 
+			  			autocompleteInput: '#autocomplete',
+			  			autocompleteCallback: this.processAddress,
+			  			latLng: [20.594, 78.963],
+			  			zoomLevel: 4,
+			  			animateMarker: false
+			  		},
+			  		style = {
+			  			width: '600px',
+			  			height: '400px'
+			  		};
+				    return (
+				    	React.createElement("div", {id: "PolicePage"}, 
+				    		React.createElement("button", {id: "logoutButton", onClick: this.logout}, "logout"), 
+				    		React.createElement("div", null, 
+				    			"Welcome, ", this.state.userId
+				    		), 
+				    			
+				    		React.createElement("input", {type: "text", id: "autocomplete"}), 
+				    		React.createElement("div", {id: "map-container", style: style}, 
+				    			React.createElement(MapWidget, {options: mapOptions})
+				    		)
+		 		    	)
+				    );
+			  	}
+			});
+
+			return PolicePage;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	        exports,
+	        __webpack_require__(3)
+	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(exports, $){
+	    	exports.makeAjaxGet = function(url, successCallback){
+	    		$.ajax({
+	    		    url: url,
+	    		    type: 'GET',
+	    		    data: postData,
+	    		    success: successCallback,
+	    		    error: function(httpRequest,status,error){
+	    		        console.log(error);
+	    		    }
+	    		});
+	    	};
+
+	    	exports.makeAjaxPost = function(url, postData, successCallback){
+	    		$.ajax({
+	    		    url: url,
+	    		    type: 'POST',
+	    		    data: postData,
+	    		    success: successCallback,
+	    		    error: function(httpRequest,status,error){
+	    		        console.log(error);
+	    		    }
+	    		});
+	    	};
+	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))    
+
+/***/ },
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -123,7 +392,7 @@ webpackJsonp([1],[
 
 	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 	        __webpack_require__(1),
-	        __webpack_require__(2)
+	        __webpack_require__(3)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, $) {
 	    
 	    var MapWidget = React.createClass({displayName: "MapWidget",
@@ -370,193 +639,6 @@ webpackJsonp([1],[
 	    });   
 	    return MapWidget;
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));     
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	        exports,
-	        __webpack_require__(2)
-	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(exports, $){
-	    	exports.makeAjaxGet = function(url, successCallback){
-	    		$.ajax({
-	    		    url: url,
-	    		    type: 'GET',
-	    		    data: postData,
-	    		    success: successCallback,
-	    		    error: function(httpRequest,status,error){
-	    		        console.log(error);
-	    		    }
-	    		});
-	    	};
-
-	    	exports.makeAjaxPost = function(url, postData, successCallback){
-	    		$.ajax({
-	    		    url: url,
-	    		    type: 'POST',
-	    		    data: postData,
-	    		    success: successCallback,
-	    		    error: function(httpRequest,status,error){
-	    		        console.log(error);
-	    		    }
-	    		});
-	    	};
-	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))    
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-			__webpack_require__(1),
-			__webpack_require__(7)
-		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, commonFunctions){
-			var LoginPage = React.createClass({displayName: "LoginPage",
-				getInitialState: function(){
-					return {
-						userName:'ashwin'
-					}			
-				},
-				componentDidMount:function(){
-					console.log('triggered once after initial render');
-				},
-				verifyCitizenPhone: function(){
-					var citizenPhone = document.getElementById('citizenPhone').value;
-					var postData = {
-						phone: citizenPhone
-					},
-					successcallback = function(data){
-						console.log(data);
-					}
-					commonFunctions.makeAjaxPost('/citizen/phone/verify', postData, successcallback);
-
-				},
-				verifyPoliceId: function(){
-					var policeid = document.getElementById('policeIdInput').value;
-					var postData = {
-						policeid: policeid
-					},
-					successcallback = function(data){
-						console.log(data);
-					}
-					commonFunctions.makeAjaxPost('/police/id/verify', postData, successcallback);
-				},
-				registerCitizen: function(){
-					var displayName = document.getElementById('citizenDisplayNameInput').value,
-						phone = document.getElementById('citizenPhone').value,
-						email = document.getElementById('citizenEmailInput').value,
-						password = document.getElementById('citizenPassword').value;
-
-					var postData = {
-						displayName: displayName,
-						phone: phone,
-						email: email,
-						password: password
-					},
-					successcallback = function(data){
-						console.log(data);
-						window.location.replace('/');
-					};
-
-					commonFunctions.makeAjaxPost('/citizen/signup', postData, successcallback);
-
-				},
-				registerPolice: function(){
-					var displayName = document.getElementById('policeDisplayNameInput').value,
-						policeId = document.getElementById('policeIdInput').value,
-						phone = document.getElementById('policePhone').value,
-						email = document.getElementById('policeEmailInput').value,
-						password = document.getElementById('policePassword').value;
-
-					var postData = {
-						displayName: displayName,
-						policeId: policeId,
-						phone: phone,
-						email: email,
-						password: password
-					},
-					successcallback = function(data){
-						console.log(data);
-						window.location.replace('/');
-					};
-
-					commonFunctions.makeAjaxPost('/police/signup', postData, successcallback);
-				},
-				loginCitizen: function(){
-					var phone = document.getElementById('citizenLoginPhone').value,
-						password = document.getElementById('citizenLoginPassword').value;
-
-					var postData = {
-						phone: phone,
-						password: password
-					},
-					successcallback = function(data){
-						console.log(data);
-						window.location.replace('/');
-					}
-					commonFunctions.makeAjaxPost('/citizen/login', postData, successcallback);
-				},
-				loginPolice: function(){
-					var policeId = document.getElementById('policeLoginId').value,
-						password = document.getElementById('policeLoginPassword').value;
-
-					var postData = {
-						policeId: policeId,
-						password: password
-					},
-					successcallback = function(data){
-						console.log(data);
-						window.location.replace('/');
-					}
-					commonFunctions.makeAjaxPost('/police/login', postData, successcallback);
-				},
-			  	render:function(){
-			  		var style={
-			  			top: '-200px',
-			  			left: '400px',
-			  			position: 'relative'
-			  		},
-			  		that = this;
-
-				    return (
-				    	React.createElement("div", {id: "loginPage"}, 
-				    		React.createElement("div", {id: "citizenSignup"}, 
-				    			React.createElement("div", null, "Citizen Display Name: ", React.createElement("input", {type: "text", id: "citizenDisplayNameInput"}), " "), 
-				    			React.createElement("div", null, "Citizen phone: ", React.createElement("input", {type: "text", id: "citizenPhone", onBlur: that.verifyCitizenPhone})), 
-				    			React.createElement("div", null, "Citizen email: ", React.createElement("input", {type: "text", id: "citizenEmailInput"})), 
-				    			React.createElement("div", null, "Citizen password: ", React.createElement("input", {type: "password", id: "citizenPassword"})), 
-				    			React.createElement("button", {type: "submit", id: "citizenSignupButton", onClick: that.registerCitizen}, "Register")
-				    		), 
-				    		React.createElement("div", {id: "policeSignup"}, 
-				    			React.createElement("div", null, "Police ID: ", React.createElement("input", {type: "text", id: "policeIdInput", onBlur: that.verifyPoliceId}), " "), 
-				    			React.createElement("div", null, "Police display name: ", React.createElement("input", {type: "text", id: "policeDisplayNameInput"}), " "), 
-				    			React.createElement("div", null, "Police phone: ", React.createElement("input", {type: "text", id: "policePhone"})), 
-				    			React.createElement("div", null, "Police email: ", React.createElement("input", {type: "text", id: "policeEmailInput"})), 
-				    			React.createElement("div", null, "Police password: ", React.createElement("input", {type: "password", id: "policePassword"})), 
-				    			React.createElement("button", {type: "submit", id: "policeSignupButton", onClick: that.registerPolice}, " register")
-				    		), 
-				    		React.createElement("div", {style: style}, 
-					    		React.createElement("div", {id: "citizenLogin"}, 
-					    			React.createElement("div", null, "Citizen Login with phone: ", React.createElement("input", {type: "text", id: "citizenLoginPhone"}), " "), 
-					    			React.createElement("div", null, "Password: ", React.createElement("input", {type: "password", id: "citizenLoginPassword"}), " "), 
-					    			React.createElement("button", {type: "submit", id: "citizenLoginButton", onClick: that.loginCitizen}, "Register")
-					    		), 
-
-					    		React.createElement("div", {id: "policeLogin"}, 
-					    			React.createElement("div", null, "Police Login with id: ", React.createElement("input", {type: "text", id: "policeLoginId"}), " "), 
-					    			React.createElement("div", null, "Password: ", React.createElement("input", {type: "password", id: "policeLoginPassword"}), " "), 
-					    			React.createElement("button", {type: "submit", id: "policeLoginButton", onClick: that.loginPolice}, "Register")
-					    		)
-					    	)	
-		 		    	)
-				    );
-			  	}
-			});
-
-			return LoginPage;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
 
 /***/ }
 ]);

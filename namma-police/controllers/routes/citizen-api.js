@@ -7,15 +7,27 @@ define(
         //'passport',
     ],
     function(citizenApiHandlers) {
-        function initialize(expressInstance) {
+        function initialize(expressInstance, io, socket) {
             //passport configurations
             var app = expressInstance,
                 debug = require('debug')('nammapolice:police-api');
+
+            app.post('/location/police', function (req, res) { //to request a cop
+                debug('request to /location/police');
+                citizenApiHandlers.getNearbyCops(req, function(responseData){
+                    res.json(responseData);
+                });
+            });
 
             app.post('/help/request', function (req, res) { //to request a cop
                 debug('request to /request/help');
                 citizenApiHandlers.requestCop(req, function(responseData){
                     res.json(responseData);
+                    for(var i=0; i<responseData.policeData.length; i++){
+                        //
+                        debug(responseData.policeData[i].policeId);
+                        io.emit(responseData.policeData[i].policeId+'-waiting-for-requests', req.body.coordinates);
+                    }    
                 });
             });
 
@@ -42,6 +54,7 @@ define(
 
             app.post('/citizen/location/update', function(req, res){
                 debug('request to /citizen/location/update');
+
                 citizenApiHandlers.updateCitizenLocation(req, function(responseData){
                     res.json(responseData);
                 });
