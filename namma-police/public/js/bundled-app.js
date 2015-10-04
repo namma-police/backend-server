@@ -314,7 +314,7 @@ webpackJsonp([1],[
 						console.log(data);
 						this.setState({coordinates: postData.coordinates});
 					}.bind(this);
-					commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
+					commonFunctions.makeAjaxPost('/police/location/update', postData, successCallback);
 
 				},
 				acknowledgeRequest: function(){
