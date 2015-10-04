@@ -28,7 +28,6 @@ define(
                     },
 
                     two: ['one', function(callback, results) {
-                        debug(results);
                         if(results.one.status === 'active'){
                             googleMapsApi.getlatLngDetails(reqBody.citizenDetails.coordinates, callback);
                         }else{
@@ -49,7 +48,6 @@ define(
                             responseCallback(err);
                         }
                     }else{
-                        debug(results.three);
 
                         var citizenDetails = {
                             userId: req.body.citizenDetails.userId,

@@ -48,7 +48,7 @@ define(
 
 		exports.checkIssueStatus = function(issueId, callback){
 			mongoDBClient.collection("issuesData").findOne({
-				_id: new ObjectID(issueId)
+				_id: issueId
 			}, function(err, results){
 				if(err){
 					callback(err);
@@ -65,7 +65,7 @@ define(
 
 		exports.updateIssueStatus = function(issueId, policeDetails, callback){
 			mongoDBClient.collection("issuesData").update({
-				_id: new ObjectID(issueId)
+				_id: issueId
 			},{
 				$set: {policeDetails: policeDetails, status: 'engaged'}
 			},function(err, results){

@@ -105,18 +105,46 @@ define(
 		}
 
 		exports.registerNewIssue = function(reqObj, callback){
-			mongoDBClient.collection("issuesData").insert({
-				occurrenceTime: reqObj.occurrenceTime,
-				citizenDetails: reqObj.citizenDetails,
+			mongoDBClient.collection("issuesData").findOne({
+				_id: reqObj.citizenDetails.userId,
 				status: 'active' //active/engaged/closed/fir
 			}, function(err, results){
 				if(err){
 					callback(err);
 				}else{
-					reqObj.issueId = results.insertedIds[0];
-					callback(null, reqObj);
+					if(results === null){
+						mongoDBClient.collection("issuesData").insert({
+							_id: reqObj.citizenDetails.userId,
+							occurrenceTime: reqObj.occurrenceTime,
+							citizenDetails: reqObj.citizenDetails,
+							status: 'active' //active/engaged/closed/fir
+						}, function(err, results){
+							if(err){
+								callback(err);
+							}else{
+								reqObj.issueId = results.insertedIds[0];
+								callback(null, reqObj);
+							}
+						});
+					}else{
+						mongoDBClient.collection("issuesData").update({
+							_id: reqObj.citizenDetails.userId
+						},{
+							$set: {citizenDetails: reqObj.citizenDetails}
+						},function(err, results){
+							if(err){
+								callback(err);
+							}else{
+								debug(results);
+								reqObj.issueId = reqObj.citizenDetails.userId;
+								callback(null, reqObj);
+							}
+						});
+					}
 				}
 			});
+
+			
 		}
 	}
 );
