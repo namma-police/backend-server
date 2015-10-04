@@ -105,38 +105,38 @@ define(
 		}
 
 		exports.registerNewIssue = function(reqObj, callback){
+			debug("inside registerNewIssue")
 			mongoDBClient.collection("issuesData").findOne({
-				_id: reqObj.citizenDetails.userId,
+				"citizenDetails.userId": reqObj.citizenDetails.userId,
 				status: 'active' //active/engaged/closed/fir
-			}, function(err, results){
+			}, function(err, resultsOne){
 				if(err){
 					callback(err);
 				}else{
-					if(results === null){
+					if(resultsOne === null){
 						mongoDBClient.collection("issuesData").insert({
-							_id: reqObj.citizenDetails.userId,
 							occurrenceTime: reqObj.occurrenceTime,
 							citizenDetails: reqObj.citizenDetails,
 							status: 'active' //active/engaged/closed/fir
-						}, function(err, results){
+						}, function(err, resultsTwo){
 							if(err){
 								callback(err);
 							}else{
-								reqObj.issueId = results.insertedIds[0];
+								reqObj.issueId = resultsTwo.insertedIds[0];
 								callback(null, reqObj);
 							}
 						});
 					}else{
 						mongoDBClient.collection("issuesData").update({
-							_id: reqObj.citizenDetails.userId
+							"citizenDetails.userId": reqObj.citizenDetails.userId,
+							status: 'active'
 						},{
 							$set: {citizenDetails: reqObj.citizenDetails}
-						},function(err, results){
+						},function(err, resultsThree){
 							if(err){
 								callback(err);
 							}else{
-								debug(results);
-								reqObj.issueId = reqObj.citizenDetails.userId;
+								reqObj.issueId = resultsOne["_id"];
 								callback(null, reqObj);
 							}
 						});
@@ -148,7 +148,7 @@ define(
 		exports.endIssue = function(issueId, callback){
 			debug(issueId);
 			mongoDBClient.collection("issuesData").update({
-				_id: issueId
+				_id: new ObjectID(issueId)
 			},{
 				$set: {status: 'resolved'}
 			},function(err, results){

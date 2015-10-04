@@ -48,23 +48,26 @@ define(
 
 		exports.checkIssueStatus = function(issueId, callback){
 			mongoDBClient.collection("issuesData").findOne({
-				_id: issueId
+				_id: new ObjectID(issueId)
 			}, function(err, results){
 				if(err){
 					callback(err);
 				}else{
-					var resultData = {
-						issueId: issueId,
-						status: results.status
+					if(results){
+						var resultData = {
+							issueId: issueId,
+							status: results.status
+						}
+						callback(null, resultData);
 					}
-					callback(null, resultData);
+					
 				}
 			});
 		}
 
 		exports.updateIssueStatus = function(issueId, policeDetails, callback){
 			mongoDBClient.collection("issuesData").update({
-				_id: issueId
+				_id: new ObjectID(issueId)
 			},{
 				$set: {policeDetails: policeDetails, status: 'engaged'}
 			},function(err, results){

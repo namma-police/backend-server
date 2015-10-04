@@ -10,7 +10,7 @@ define(
         function initialize(expressInstance, io, socket) {
             //passport configurations
             var app = expressInstance,
-                debug = require('debug')('nammapolice:police-api');
+                debug = require('debug')('nammapolice:citizen-api');
 
             app.post('/location/police', function (req, res) { //Fetches nearby cops
                 debug('request to /location/police');
