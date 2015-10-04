@@ -23,10 +23,14 @@ define(
                 debug('request to /request/help');
                 citizenApiHandlers.requestCop(req, function(responseData){
                     res.json(responseData);
+                    debug(responseData);
+                    var citizenData = req.session.user;
+                    citizenData.location = responseData.location;
+
                     for(var i=0; i<responseData.policeData.length; i++){
                         //
                         debug(responseData.policeData[i].policeId);
-                        io.emit(responseData.policeData[i].policeId+'-waiting-for-requests', req.body.coordinates);
+                        io.emit(responseData.policeData[i].policeId+'-waiting-for-requests', citizenData);
                     }    
                 });
             });
@@ -54,10 +58,12 @@ define(
 
             app.post('/citizen/location/update', function(req, res){
                 debug('request to /citizen/location/update');
-
-                citizenApiHandlers.updateCitizenLocation(req, function(responseData){
-                    res.json(responseData);
-                });
+                debug(req.session.user);
+                if(req.session.user){
+                    citizenApiHandlers.updateCitizenLocation(req, function(responseData){
+                        res.json(responseData);
+                    });
+                }
             });
         }
         return {

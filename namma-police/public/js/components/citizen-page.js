@@ -22,6 +22,8 @@ define(
 			},
 			processAddress: function(placeInfo){
 				var postData = {
+					userId: this.props.userId,
+					displayName: 'Anantha',
 					coordinates: [placeInfo.geometry.location.lat(),placeInfo.geometry.location.lng()]
 				},
 				successCallback = function(data){

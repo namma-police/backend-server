@@ -155,7 +155,6 @@ define(
                     if(err){
                         debug(err);
                     }else{
-                        console.log(results);
                         var resultData = {};
                         if(results[0].phone){
                             bcrypt.compare(req.body.password, results[0].password, function(err, res) {
@@ -199,7 +198,7 @@ define(
 
         function loginPolice(req, responseCallback){
             debug('api-handler loginPolice');
-            debug(req.body);
+            
             var reqObj = req.body;
 
             async.series(

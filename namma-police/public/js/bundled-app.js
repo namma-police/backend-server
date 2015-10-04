@@ -126,7 +126,7 @@ webpackJsonp([1],[
 					},
 					successcallback = function(data){
 						console.log(data);
-						window.location.replace('/');
+						//window.location.replace('/');
 					}
 					commonFunctions.makeAjaxPost('/citizen/login', postData, successcallback);
 				},
@@ -217,11 +217,12 @@ webpackJsonp([1],[
 				},
 				processAddress: function(placeInfo){
 					var postData = {
+						userId: this.props.userId,
+						displayName: 'Anantha',
 						coordinates: [placeInfo.geometry.location.lat(),placeInfo.geometry.location.lng()]
 					},
 					successCallback = function(data){
 						console.log(data);
-						socket.emit('help-request', postData);
 					}.bind(this);
 					
 					commonFunctions.makeAjaxPost('/help/request', postData, successCallback);
@@ -278,14 +279,17 @@ webpackJsonp([1],[
 					return {
 						userId: this.props.userId,
 						userType: this.props.userType,
-						currentLocation: null
+						currentLocation: null,
+						citizenDetails: {}
 					}			
 				},
 				componentDidMount:function(){
 					console.log('triggered once after initial render');
+					var that = this;
 					//this.props.userId+
 					socket.on(this.props.userId+'-waiting-for-requests', function(postData){
 						console.log(postData);
+						that.setState({citizenDetails: postData});
 					});
 					
 				},
@@ -296,10 +300,13 @@ webpackJsonp([1],[
 					successCallback = function(data){
 						console.log(data);
 					};
-					
-					//commonFunctions.makeAjaxPost('/help/request', postData, successCallback);
 					commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
 
+				},
+				acknowledgeRequest: function(){
+					var postData = {
+						
+					}
 				},
 				logout: function(){
 					window.location.replace('/logout');
@@ -323,7 +330,7 @@ webpackJsonp([1],[
 				    		React.createElement("div", null, 
 				    			"Welcome, ", this.state.userId
 				    		), 
-				    			
+				    		React.createElement("button", {id: "acknowledge", onClick: this.acknowledgeRequest}, "Acknowledge"), 
 				    		React.createElement("input", {type: "text", id: "autocomplete"}), 
 				    		React.createElement("div", {id: "map-container", style: style}, 
 				    			React.createElement(MapWidget, {options: mapOptions})

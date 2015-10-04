@@ -84,6 +84,7 @@ define(
                             res.json(responseData);                          
                         });
                     }else{
+                        debug('inside else')
                         res.json({
                             status: 'invalid'
                         });

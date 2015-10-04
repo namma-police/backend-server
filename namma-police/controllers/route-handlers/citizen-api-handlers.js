@@ -37,11 +37,16 @@ define(
 
             async.auto(
                 {
-                    one: function(callback){
-                        citizenDbApi.getNearestCops(coordinates, callback);
+                    one: function(callback) {
+                        googleMapsApi.getlatLngDetails(req.body.coordinates, callback);
                     },
-                    two: ['one', function(callback, results){
-                        var resultArray = results.one.map(function(policeDetails){
+
+                    two: ['one', function(callback){
+                        citizenDbApi.getNearestCops(coordinates, callback);
+                    }],
+
+                    three: ['two', function(callback, results){
+                        var resultArray = results.two.map(function(policeDetails){
                             return {
                                 policeId: policeDetails.policeId,
                                 displayName: policeDetails.displayName,
@@ -61,25 +66,30 @@ define(
                         if(policeData.length === 0){
                             policeData = resultArray;
                         };
+
                         var resultData = {
+                            location: {
+                                coordinates: req.body.coordinates,
+                                address: results.one.results[0].formatted_address
+                            },
                             policeData: policeData
                         };
                         
-                        responseCallback(resultData);    
+                        responseCallback(resultData); 
+
                         callback(null, resultArray);
                     }],
-                    three: ['two', function(callback){
-                        googleMapsApi.getlatLngDetails(req.body.coordinates, callback);       
-                    }],
+
                     four: ['three', function(callback, results){
                         var date = new Date();
                         var reqObj = {
                             occurrenceTime: date.getTime(),
-                            citizenId: req.session.user.userId,
+                            citizenId: req.body.userId,
+                            citizenDisplayName: req.body.displayName,
                             location: {
                                 type: "Point",
-                                address: results.three.results[0].formatted_address,
-                                coordinates: [Number(req.body.coordinates[1]), Number(req.body.coordinates[0])]
+                                address: results.one.results[0].formatted_address,
+                                coordinates: coordinates
                             }
                         }
                         citizenDbApi.registerNewIssue(reqObj, callback);

@@ -10,14 +10,17 @@ define(
 				return {
 					userId: this.props.userId,
 					userType: this.props.userType,
-					currentLocation: null
+					currentLocation: null,
+					citizenDetails: {}
 				}			
 			},
 			componentDidMount:function(){
 				console.log('triggered once after initial render');
+				var that = this;
 				//this.props.userId+
 				socket.on(this.props.userId+'-waiting-for-requests', function(postData){
 					console.log(postData);
+					that.setState({citizenDetails: postData});
 				});
 				
 			},
@@ -28,10 +31,13 @@ define(
 				successCallback = function(data){
 					console.log(data);
 				};
-				
-				//commonFunctions.makeAjaxPost('/help/request', postData, successCallback);
 				commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
 
+			},
+			acknowledgeRequest: function(){
+				var postData = {
+					
+				}
 			},
 			logout: function(){
 				window.location.replace('/logout');
@@ -55,7 +61,7 @@ define(
 			    		<div>
 			    			Welcome, {this.state.userId}
 			    		</div>
-			    			
+			    		<button id="acknowledge" onClick={this.acknowledgeRequest}>Acknowledge</button> 
 			    		<input type="text" id="autocomplete" />
 			    		<div id="map-container" style={style}>
 			    			<MapWidget options = {mapOptions} />

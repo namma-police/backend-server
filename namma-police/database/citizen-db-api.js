@@ -73,7 +73,8 @@ define(
 		exports.registerNewIssue = function(reqObj, callback){
 			mongoDBClient.collection("issuesData").insert({
 				citizenId: reqObj.citizenId,
-				occurrenceTime: occurrenceTime,
+				citizenDisplayName: reqObj.citizenDisplayName,
+				occurrenceTime: reqObj.occurrenceTime,
 				//policeId: reqObj.policeId,
 				citizenLocation: reqObj.location,
 				status: 'active' //active/engaged/closed/fir

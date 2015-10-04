@@ -120,8 +120,9 @@ define(
 				phone: reqObj.phone,
 				email: reqObj.email,
 				password: reqObj.password,
-				earnedRatings: 5,
-				totalRatings: 5
+				earnedRatings: 4,
+				totalRatings: 5,
+				status: 'available'
 			},function(err, results){
 				var resultData = {};
 				if(err){

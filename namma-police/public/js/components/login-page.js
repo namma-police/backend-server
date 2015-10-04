@@ -85,7 +85,7 @@ define(
 				},
 				successcallback = function(data){
 					console.log(data);
-					window.location.replace('/');
+					//window.location.replace('/');
 				}
 				commonFunctions.makeAjaxPost('/citizen/login', postData, successcallback);
 			},
