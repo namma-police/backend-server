@@ -55,8 +55,27 @@ define(
 				}else{
 					debug(results);
 					var resultData = {
-						issueId: results.issueId,
+						issueId: issueId,
 						status: results.status
+					}
+					callback(null, resultData);
+				}
+			});
+		}
+
+		exports.updateIssueStatus = function(issueId, policeDetails, callback){
+			mongoDBClient.collection("issuesData").update({
+				_id: new ObjectID(issueId)
+			},{
+				$set: {policeDetails: policeDetails, status: 'engaged'}
+			},function(err, results){
+				if(err){
+					callback(err);
+				}else{
+					debug(results);
+					var resultData = {
+						issueId: issueId,
+						status: 'engaged'
 					}
 					callback(null, resultData);
 				}

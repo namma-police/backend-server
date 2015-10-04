@@ -15,10 +15,13 @@ define(
             app.post('/request/acknowledge', function (req, res) {
                 debug('request to /request/acknowledge');
                 policeApiHandlers.acknowledgeRequest(req, function(citizenData, policeData){
-                    debug(citizenData);
-                    debug(policeData);
-                    io.emit(citizenData.citizenDetails.userId+'-waiting-for-help', policeData);
-                    res.json(citizenData);
+                    if(citizenData.citizenDetails){
+                        io.emit(citizenData.citizenDetails.userId+'-waiting-for-help', policeData); 
+                        res.json(citizenData);
+                    }else if(citizenData.status){
+                        res.json(citizenData);
+                    }
+                    
                 });
             });
 

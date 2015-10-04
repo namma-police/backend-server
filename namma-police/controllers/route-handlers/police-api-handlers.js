@@ -45,6 +45,9 @@ define(
                 },function(err, results){
                     if(err){
                         debug(err);
+                        if(err.status){
+                            responseCallback(err);
+                        }
                     }else{
                         debug(results.three);
 
@@ -78,6 +81,13 @@ define(
                             policeDetails: policeDetails
                         };
                         responseCallback(citizenData, policeData);
+                        policeDbApi.updateIssueStatus(reqBody.issueId, policeDetails, function(err, result){
+                            if(err){
+                                debug(err);
+                            }else{
+                                debug(result);
+                            }
+                        });
                     }
                 }    
             );
