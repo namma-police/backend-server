@@ -46,18 +46,19 @@ define(
 			});	
 		}
 
-		exports.registerNewIssue = function(reqObj, callback){
-			mongoDBClient.collection("issuesData").insert({
-				occurrenceTime: reqObj.occurrenceTime,
-				citizenDetails: reqObj.citizenDetails,
-				policeDetails: reqObj.policeDetails,
-				status: 'active' //active/engaged/closed/fir
+		exports.checkIssueStatus = function(issueId, callback){
+			mongoDBClient.collection("issuesData").findOne({
+				_id: new ObjectID(issueId)
 			}, function(err, results){
 				if(err){
 					callback(err);
 				}else{
-					reqObj.issueId = results.insertedIds[0];
-					callback(null, reqObj);
+					debug(results);
+					var resultData = {
+						issueId: results.issueId,
+						status: results.status
+					}
+					callback(null, resultData);
 				}
 			});
 		}

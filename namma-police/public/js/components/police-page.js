@@ -12,7 +12,8 @@ define(
 					displayName: this.props.displayName,
 					userType: this.props.userType,
 					coordinates: ['12.934689', '77.61206400000003'],
-					citizenDetails: {}
+					citizenDetails: {},
+					issueId: null
 				}			
 			},
 			componentDidMount:function(){
@@ -21,7 +22,7 @@ define(
 				//this.props.userId+
 				socket.on(this.props.userId+'-waiting-for-requests', function(postData){
 					console.log(postData);
-					that.setState({citizenDetails: postData});
+					that.setState({citizenDetails: postData.citizenDetails, issueId: postData.issueId});
 				});
 				
 			},
@@ -42,6 +43,7 @@ define(
 				var citizenDetails = this.state.citizenDetails,
 					that = this;
 				var postData = {
+					issueId: that.state.issueId,
 					citizenDetails: {
 						userId: citizenDetails.userId,
 						displayName: citizenDetails.displayName,

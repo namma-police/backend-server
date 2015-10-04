@@ -2,21 +2,20 @@ webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(3);
+	module.exports = __webpack_require__(2);
 
 
 /***/ },
 /* 1 */,
-/* 2 */,
-/* 3 */
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 			__webpack_require__(1),
-			__webpack_require__(4),
-			__webpack_require__(7),
+			__webpack_require__(3),
 			__webpack_require__(5),
-			__webpack_require__(6)
+			__webpack_require__(6),
+			__webpack_require__(7)
 			
 		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, $, LoginPage, CitizenPage, PolicePage){	
 			console.log('Loaded the Home Page');
@@ -38,196 +37,9 @@ webpackJsonp([1],[
 	//webpack -p (for production)
 
 /***/ },
+/* 3 */,
 /* 4 */,
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-			__webpack_require__(1),
-			__webpack_require__(9),
-			__webpack_require__(8)
-		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, MapWidget, commonFunctions){
-			var CitizenPage = React.createClass({displayName: "CitizenPage",
-				getInitialState: function(){
-					return {
-						userId: this.props.userId,
-						displayName: this.props.displayName,
-						userType: this.props.userType,
-						coordinates: null
-					}			
-				},
-				componentDidMount:function(){
-					console.log('triggered once after initial render');
-
-					socket.on(this.props.userId+'-waiting-for-help', function(postData){
-						console.log(postData);
-					});
-				},
-				processAddress: function(placeInfo){
-					var postData = {
-						userId: this.props.userId,
-						displayName: this.props.displayName,
-						coordinates: [placeInfo.geometry.location.lat(),placeInfo.geometry.location.lng()]
-					},
-					successCallback = function(data){
-						console.log(data);
-						this.setState({coordinates: postData.coordinates})
-					}.bind(this);
-					
-					commonFunctions.makeAjaxPost('/help/request', postData, successCallback);
-					//commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
-
-				},
-				logout: function(){
-					window.location.replace('/logout');
-				},
-			  	render:function(){
-			  		var mapOptions = {
-			  			displayMaps: true, 
-			  			autocompleteInput: '#autocomplete',
-			  			autocompleteCallback: this.processAddress,
-			  			latLng: [20.594, 78.963],
-			  			zoomLevel: 4,
-			  			animateMarker: false
-			  		},
-			  		style = {
-			  			width: '600px',
-			  			height: '400px'
-			  		};
-				    return (
-				    	React.createElement("div", {id: "CitizenPage"}, 
-				    		React.createElement("button", {id: "logoutButton", onClick: this.logout}, "logout"), 
-				    		React.createElement("div", null, 
-				    			"user type: ", this.state.userType
-				    		), 
-				    		React.createElement("div", null, 
-				    			"user id: ", this.state.userId
-				    		), 
-				    		React.createElement("div", null, 
-				    			"display name: ", this.state.displayName
-				    		), 
-				    			
-				    		React.createElement("input", {type: "text", id: "autocomplete"}), 
-				    		React.createElement("div", {id: "map-container", style: style}, 
-				    			React.createElement(MapWidget, {options: mapOptions})
-				    		)
-		 		    	)
-				    );
-			  	}
-			});
-
-			return CitizenPage;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-			__webpack_require__(1),
-			__webpack_require__(9),
-			__webpack_require__(8)
-		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, MapWidget, commonFunctions){
-			var PolicePage = React.createClass({displayName: "PolicePage",
-				getInitialState: function(){
-					return {
-						userId: this.props.userId,
-						displayName: this.props.displayName,
-						userType: this.props.userType,
-						coordinates: ['12.934689', '77.61206400000003'],
-						citizenDetails: {}
-					}			
-				},
-				componentDidMount:function(){
-					console.log('triggered once after initial render');
-					var that = this;
-					//this.props.userId+
-					socket.on(this.props.userId+'-waiting-for-requests', function(postData){
-						console.log(postData);
-						that.setState({citizenDetails: postData});
-					});
-					
-				},
-				processAddress: function(placeInfo){
-					var that = this;
-					var postData = {
-						userId: that.state.userId,
-						coordinates: [placeInfo.geometry.location.lat(),placeInfo.geometry.location.lng()]
-					},
-					successCallback = function(data){
-						console.log(data);
-						this.setState({coordinates: postData.coordinates});
-					}.bind(this);
-					commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
-
-				},
-				acknowledgeRequest: function(){
-					var citizenDetails = this.state.citizenDetails,
-						that = this;
-					var postData = {
-						citizenDetails: {
-							userId: citizenDetails.userId,
-							displayName: citizenDetails.displayName,
-							coordinates: citizenDetails.location.coordinates
-						},
-						policeDetails: {
-							userId: that.state.userId,
-							displayName: that.state.displayName,
-							coordinates: that.state.coordinates
-						}
-					},
-					successCallback = function(data){
-						console.log(data);
-					}.bind(this);
-
-					commonFunctions.makeAjaxPost('/request/acknowledge', postData, successCallback);
-
-				},
-				logout: function(){
-					window.location.replace('/logout');
-				},
-			  	render:function(){
-			  		var mapOptions = {
-			  			displayMaps: true, 
-			  			autocompleteInput: '#autocomplete',
-			  			autocompleteCallback: this.processAddress,
-			  			latLng: [20.594, 78.963],
-			  			zoomLevel: 4,
-			  			animateMarker: false
-			  		},
-			  		style = {
-			  			width: '600px',
-			  			height: '400px'
-			  		};
-				    return (
-				    	React.createElement("div", {id: "PolicePage"}, 
-				    		React.createElement("button", {id: "logoutButton", onClick: this.logout}, "logout"), 
-				    		React.createElement("div", null, 
-				    			"user type: ", this.state.userType
-				    		), 
-				    		React.createElement("div", null, 
-				    			"user id: ", this.state.userId
-				    		), 
-				    		React.createElement("div", null, 
-				    			"display name: ", this.state.displayName
-				    		), 
-				    		React.createElement("button", {id: "acknowledge", onClick: this.acknowledgeRequest}, "Acknowledge"), 
-				    		React.createElement("input", {type: "text", id: "autocomplete"}), 
-				    		React.createElement("div", {id: "map-container", style: style}, 
-				    			React.createElement(MapWidget, {options: mapOptions})
-				    		)
-		 		    	)
-				    );
-			  	}
-			});
-
-			return PolicePage;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -381,12 +193,202 @@ webpackJsonp([1],[
 
 
 /***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+			__webpack_require__(1),
+			__webpack_require__(9),
+			__webpack_require__(8)
+		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, MapWidget, commonFunctions){
+			var CitizenPage = React.createClass({displayName: "CitizenPage",
+				getInitialState: function(){
+					return {
+						userId: this.props.userId,
+						displayName: this.props.displayName,
+						userType: this.props.userType,
+						coordinates: null
+					}			
+				},
+				componentDidMount:function(){
+					console.log('triggered once after initial render');
+
+					socket.on(this.props.userId+'-waiting-for-help', function(postData){
+						console.log(postData);
+					});
+				},
+				processAddress: function(placeInfo){
+					var postData = {
+						userId: this.props.userId,
+						displayName: this.props.displayName,
+						coordinates: [placeInfo.geometry.location.lat(),placeInfo.geometry.location.lng()]
+					},
+					successCallback = function(data){
+						console.log(data);
+						this.setState({coordinates: postData.coordinates})
+					}.bind(this);
+					
+					commonFunctions.makeAjaxPost('/help/request', postData, successCallback);
+					//commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
+
+				},
+				logout: function(){
+					window.location.replace('/logout');
+				},
+			  	render:function(){
+			  		var mapOptions = {
+			  			displayMaps: true, 
+			  			autocompleteInput: '#autocomplete',
+			  			autocompleteCallback: this.processAddress,
+			  			latLng: [20.594, 78.963],
+			  			zoomLevel: 4,
+			  			animateMarker: false
+			  		},
+			  		style = {
+			  			width: '600px',
+			  			height: '400px'
+			  		};
+				    return (
+				    	React.createElement("div", {id: "CitizenPage"}, 
+				    		React.createElement("button", {id: "logoutButton", onClick: this.logout}, "logout"), 
+				    		React.createElement("div", null, 
+				    			"user type: ", this.state.userType
+				    		), 
+				    		React.createElement("div", null, 
+				    			"user id: ", this.state.userId
+				    		), 
+				    		React.createElement("div", null, 
+				    			"display name: ", this.state.displayName
+				    		), 
+				    			
+				    		React.createElement("input", {type: "text", id: "autocomplete"}), 
+				    		React.createElement("div", {id: "map-container", style: style}, 
+				    			React.createElement(MapWidget, {options: mapOptions})
+				    		)
+		 		    	)
+				    );
+			  	}
+			});
+
+			return CitizenPage;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+			__webpack_require__(1),
+			__webpack_require__(9),
+			__webpack_require__(8)
+		], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, MapWidget, commonFunctions){
+			var PolicePage = React.createClass({displayName: "PolicePage",
+				getInitialState: function(){
+					return {
+						userId: this.props.userId,
+						displayName: this.props.displayName,
+						userType: this.props.userType,
+						coordinates: ['12.934689', '77.61206400000003'],
+						citizenDetails: {},
+						issueId: null
+					}			
+				},
+				componentDidMount:function(){
+					console.log('triggered once after initial render');
+					var that = this;
+					//this.props.userId+
+					socket.on(this.props.userId+'-waiting-for-requests', function(postData){
+						console.log(postData);
+						that.setState({citizenDetails: postData.citizenDetails, issueId: postData.issueId});
+					});
+					
+				},
+				processAddress: function(placeInfo){
+					var that = this;
+					var postData = {
+						userId: that.state.userId,
+						coordinates: [placeInfo.geometry.location.lat(),placeInfo.geometry.location.lng()]
+					},
+					successCallback = function(data){
+						console.log(data);
+						this.setState({coordinates: postData.coordinates});
+					}.bind(this);
+					commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
+
+				},
+				acknowledgeRequest: function(){
+					var citizenDetails = this.state.citizenDetails,
+						that = this;
+					var postData = {
+						issueId: that.state.issueId,
+						citizenDetails: {
+							userId: citizenDetails.userId,
+							displayName: citizenDetails.displayName,
+							coordinates: citizenDetails.location.coordinates
+						},
+						policeDetails: {
+							userId: that.state.userId,
+							displayName: that.state.displayName,
+							coordinates: that.state.coordinates
+						}
+					},
+					successCallback = function(data){
+						console.log(data);
+					}.bind(this);
+
+					commonFunctions.makeAjaxPost('/request/acknowledge', postData, successCallback);
+
+				},
+				logout: function(){
+					window.location.replace('/logout');
+				},
+			  	render:function(){
+			  		var mapOptions = {
+			  			displayMaps: true, 
+			  			autocompleteInput: '#autocomplete',
+			  			autocompleteCallback: this.processAddress,
+			  			latLng: [20.594, 78.963],
+			  			zoomLevel: 4,
+			  			animateMarker: false
+			  		},
+			  		style = {
+			  			width: '600px',
+			  			height: '400px'
+			  		};
+				    return (
+				    	React.createElement("div", {id: "PolicePage"}, 
+				    		React.createElement("button", {id: "logoutButton", onClick: this.logout}, "logout"), 
+				    		React.createElement("div", null, 
+				    			"user type: ", this.state.userType
+				    		), 
+				    		React.createElement("div", null, 
+				    			"user id: ", this.state.userId
+				    		), 
+				    		React.createElement("div", null, 
+				    			"display name: ", this.state.displayName
+				    		), 
+				    		React.createElement("button", {id: "acknowledge", onClick: this.acknowledgeRequest}, "Acknowledge"), 
+				    		React.createElement("input", {type: "text", id: "autocomplete"}), 
+				    		React.createElement("div", {id: "map-container", style: style}, 
+				    			React.createElement(MapWidget, {options: mapOptions})
+				    		)
+		 		    	)
+				    );
+			  	}
+			});
+
+			return PolicePage;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 	        exports,
-	        __webpack_require__(4)
+	        __webpack_require__(3)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(exports, $){
 	    	exports.makeAjaxGet = function(url, successCallback){
 	    		$.ajax({
@@ -435,7 +437,7 @@ webpackJsonp([1],[
 
 	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 	        __webpack_require__(1),
-	        __webpack_require__(4)
+	        __webpack_require__(3)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(React, $) {
 	    
 	    var MapWidget = React.createClass({displayName: "MapWidget",

@@ -46,8 +46,24 @@ define(
                     two: ['one', function(callback){
                         citizenDbApi.getNearestCops(coordinates, callback);
                     }],
-
                     three: ['two', function(callback, results){
+                        var citizenDetails = {
+                            userId: req.body.userId,
+                            displayName: req.body.displayName,
+                            location: {
+                                coordinates: coordinates,
+                                address: results.one.results[0].formatted_address
+                            }
+                        },
+                        date = new Date();
+                        var citizenObj = {
+                            citizenDetails: citizenDetails,
+                            occurrenceTime: date.getTime()
+                        }
+                        citizenDbApi.registerNewIssue(citizenObj, callback);
+                    }],
+
+                    four: ['three', function(callback, results){
                         var resultArray = results.two.map(function(policeDetails){
                             return {
                                 userId: policeDetails.userId,
@@ -69,13 +85,16 @@ define(
                             policeArray = resultArray;
                         };
                         var citizenData = {
-                            userId: req.body.userId,
-                            phone: req.body.userId,
-                            displayName: req.body.displayName,
-                            location: {
-                                coordinates: req.body.coordinates,
-                                address: results.one.results[0].formatted_address
-                            }
+                            issueId: results.three.issueId,
+                            citizenDetails: {
+                                userId: req.body.userId,
+                                phone: req.body.userId,
+                                displayName: req.body.displayName,
+                                location: {
+                                    coordinates: req.body.coordinates,
+                                    address: results.one.results[0].formatted_address
+                                }
+                            }  
                         }
                         var policeData = {
                             policeData: policeArray
@@ -84,22 +103,7 @@ define(
                         responseCallback(citizenData, policeData); 
 
                         callback(null, citizenData);
-                    }],
-
-                    // four: ['three', function(callback, results){
-                    //     var date = new Date();
-                    //     var reqObj = {
-                    //         occurrenceTime: date.getTime(),
-                    //         userId: req.body.userId,
-                    //         citizenDisplayName: req.body.displayName,
-                    //         location: {
-                    //             type: "Point",
-                    //             address: results.one.results[0].formatted_address,
-                    //             coordinates: coordinates
-                    //         }
-                    //     }
-                    //     citizenDbApi.registerNewIssue(reqObj, callback);
-                    // }]
+                    }]
                 },function(err, results){
                     if(err){
                         debug(err);
