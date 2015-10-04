@@ -12,21 +12,25 @@ define(
 
         function acknowledgeRequest(req, responseCallback){
             debug('api-handler acknowledgeRequest');
-            debug(req.body);
-            var citizenCoordinates = [Number(req.body.citizenDetails.coordinates[1]), Number(req.body.citizenDetails.coordinates[0])];
+            var reqBody = req.body;
+            if(typeof(reqBody.citizenDetails.coordinates) === 'string'){
+                reqBody.citizenDetails.coordinates = JSON.parse(reqBody.citizenDetails.coordinates)
+            }
 
-            var policeCoordinates = [Number(req.body.policeDetails.coordinates[1]), Number(req.body.policeDetails.coordinates[0])];
+            var citizenCoordinates = [Number(reqBody.citizenDetails.coordinates[1]), Number(reqBody.citizenDetails.coordinates[0])];
+
+            var policeCoordinates = [Number(reqBody.policeDetails.coordinates[1]), Number(reqBody.policeDetails.coordinates[0])];
 
             async.auto(
                 {
                     one: function(callback){
-                        policeDbApi.checkIssueStatus(req.body.issueId, callback);
+                        policeDbApi.checkIssueStatus(reqBody.issueId, callback);
                     },
 
                     two: ['one', function(callback, results) {
                         debug(results);
                         if(results.one.status === 'active'){
-                            googleMapsApi.getlatLngDetails(req.body.citizenDetails.coordinates, callback);
+                            googleMapsApi.getlatLngDetails(reqBody.citizenDetails.coordinates, callback);
                         }else{
                             var result = {
                                 status: 'A police is already on it'
@@ -36,7 +40,7 @@ define(
                         
                     }],
                     three: ['two', function(callback, results) {
-                        googleMapsApi.getlatLngDetails(req.body.policeDetails.coordinates, callback);
+                        googleMapsApi.getlatLngDetails(reqBody.policeDetails.coordinates, callback);
                     }]
                 },function(err, results){
                     if(err){
@@ -55,9 +59,9 @@ define(
                         }
 
                         var policeDetails = {
-                            userId: req.body.policeDetails.userId,
-                            displayName: req.body.policeDetails.displayName,
-                            phone: req.body.policeDetails.phone,
+                            userId: reqBody.policeDetails.userId,
+                            displayName: reqBody.policeDetails.displayName,
+                            phone: reqBody.policeDetails.phone,
                             location: {
                                 address: results.three.results[0].formatted_address,
                                 coordinates: citizenCoordinates
@@ -65,12 +69,12 @@ define(
                         }
 
                         var citizenData = {
-                            issueId: req.body.issueId,
+                            issueId: reqBody.issueId,
                             citizenDetails: citizenDetails
                         },
 
                         policeData = {
-                            issueId: req.body.issueId,
+                            issueId: reqBody.issueId,
                             policeDetails: policeDetails
                         };
                         responseCallback(citizenData, policeData);
@@ -89,16 +93,20 @@ define(
 
         function updatePoliceLocation(req, responseCallback){
             debug('inside updatePoliceLocation');
+            var reqBody = req.body;
+            if(typeof(reqBody.coordinates) === 'string'){
+                reqBody.coordinates = JSON.parse(reqBody.coordinates)
+            }
             async.auto(
                 {
                     one: function(callback) {
-                        googleMapsApi.getlatLngDetails(req.body.coordinates, callback);
+                        googleMapsApi.getlatLngDetails(reqBody.coordinates, callback);
                     },
                     two: ['one', function (callback, results){
                         var locationData = {
-                            userId: req.body.userId,
+                            userId: reqBody.userId,
                             address: results.one.results[0].formatted_address,
-                            coordinates: [Number(req.body.coordinates[1]), Number(req.body.coordinates[0])]
+                            coordinates: [Number(reqBody.coordinates[1]), Number(reqBody.coordinates[0])]
                         }
                         policeDbApi.updatePoliceLocation(locationData, callback)
                     }]

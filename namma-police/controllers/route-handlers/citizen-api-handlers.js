@@ -12,7 +12,12 @@ define(
         var debug = require('debug')('nammapolice:citizen-api-handlers');
 
         function getNearbyCops(req, responseCallback){
-            var coordinates = [Number(req.body.coordinates[1]), Number(req.body.coordinates[0])];
+            var reqBody = req.body;
+            if(typeof(reqBody.coordinates) === 'string'){
+                reqBody.coordinates = JSON.parse(reqBody.coordinates)
+            }
+            
+            var coordinates = [Number(reqBody.coordinates[1]), Number(reqBody.coordinates[0])];
 
             citizenDbApi.getNearestCops(coordinates, function(err, results){
                 if(err){
@@ -35,12 +40,16 @@ define(
 
         function requestCop(req, responseCallback){
             debug('api-handler requestCop');
-            var coordinates = [Number(req.body.coordinates[1]), Number(req.body.coordinates[0])];
+            var reqBody = req.body;
+            if(typeof(reqBody.coordinates) === 'string'){
+                reqBody.coordinates = JSON.parse(reqBody.coordinates)
+            }
+            var coordinates = [Number(reqBody.coordinates[1]), Number(reqBody.coordinates[0])];
 
             async.auto(
                 {
                     one: function(callback) {
-                        googleMapsApi.getlatLngDetails(req.body.coordinates, callback);
+                        googleMapsApi.getlatLngDetails(reqBody.coordinates, callback);
                     },
 
                     two: ['one', function(callback){
@@ -48,8 +57,8 @@ define(
                     }],
                     three: ['two', function(callback, results){
                         var citizenDetails = {
-                            userId: req.body.userId,
-                            displayName: req.body.displayName,
+                            userId: reqBody.userId,
+                            displayName: reqBody.displayName,
                             location: {
                                 coordinates: coordinates,
                                 address: results.one.results[0].formatted_address
@@ -87,11 +96,11 @@ define(
                         var citizenData = {
                             issueId: results.three.issueId,
                             citizenDetails: {
-                                userId: req.body.userId,
-                                phone: req.body.userId,
-                                displayName: req.body.displayName,
+                                userId: reqBody.userId,
+                                phone: reqBody.userId,
+                                displayName: reqBody.displayName,
                                 location: {
-                                    coordinates: req.body.coordinates,
+                                    coordinates: reqBody.coordinates,
                                     address: results.one.results[0].formatted_address
                                 }
                             }  
@@ -129,17 +138,21 @@ define(
 
         function updateCitizenLocation(req, responseCallback){
             debug('inside updateCitizenLocation');
+            var reqBody = req.body;
+            if(typeof(reqBody.coordinates) === 'string'){
+                reqBody.coordinates = JSON.parse(reqBody.coordinates)
+            }
             async.auto(
                 {
                     one: function(callback) {
-                        googleMapsApi.getlatLngDetails(req.body.coordinates, callback);
+                        googleMapsApi.getlatLngDetails(reqBody.coordinates, callback);
                     },
                     two: ['one', function (callback, results){
                         debug(results);
                         var locationData = {
                             phone: req.session.user.userId,
                             address: results.one.results[0].formatted_address,
-                            coordinates: [Number(req.body.coordinates[1]), Number(req.body.coordinates[0])]
+                            coordinates: [Number(reqBody.coordinates[1]), Number(reqBody.coordinates[0])]
                         }
                         citizenDbApi.updateCitizenLocation(locationData, callback)
                     }]
