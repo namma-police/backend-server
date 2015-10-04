@@ -9,6 +9,7 @@ define(
 			getInitialState: function(){
 				return {
 					userId: this.props.userId,
+					displayName: this.props.displayName,
 					userType: this.props.userType,
 					currentLocation: null,
 					citizenDetails: {}
@@ -35,9 +36,18 @@ define(
 
 			},
 			acknowledgeRequest: function(){
+				var citizenDetails = this.state.citizenDetails;
 				var postData = {
-					
-				}
+					userId: citizenDetails.userId,
+					displayName: citizenDetails.displayName,
+					coordinates: citizenDetails.location.coordinates
+				},
+				successCallback = function(data){
+					console.log(data);
+				}.bind(this);
+
+				commonFunctions.makeAjaxPost('/request/acknowledge', postData, successCallback);
+
 			},
 			logout: function(){
 				window.location.replace('/logout');
@@ -59,7 +69,13 @@ define(
 			    	<div id="PolicePage">
 			    		<button id="logoutButton" onClick={this.logout}>logout</button>
 			    		<div>
-			    			Welcome, {this.state.userId}
+			    			user type: {this.state.userType}
+			    		</div>
+			    		<div>	
+			    			user id: {this.state.userId}
+			    		</div>
+			    		<div>
+			    			display name: {this.state.displayName}
 			    		</div>
 			    		<button id="acknowledge" onClick={this.acknowledgeRequest}>Acknowledge</button> 
 			    		<input type="text" id="autocomplete" />

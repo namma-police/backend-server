@@ -13,7 +13,7 @@ define(
 			mongoDBClient = configMongo.mongoClientDB(),
 			dataTypes = configCassandra.dataTypes(),
 			that = this,
-			debug = require('debug')('nammapolice:account-db');
+			debug = require('debug')('nammapolice:police-db-api');
 		
 		exports.updatePoliceLocation = function(reqObj, callback){
 			mongoDBClient.collection("policeData").ensureIndex( { "location" : "2dsphere" }, function(){
@@ -44,6 +44,21 @@ define(
 					}
 				});
 			});	
+		}
+
+		exports.registerNewIssue = function(reqObj, callback){
+			mongoDBClient.collection("issuesData").insert({
+				occurrenceTime: reqObj.occurrenceTime,
+				citizenDetails: reqObj.citizenDetails,
+				policeDetails: reqObj.policeDetails,
+				status: 'active' //active/engaged/closed/fir
+			}, function(err, results){
+				if(err){
+					callback(err);
+				}else{
+					callback(null, results);
+				}
+			});
 		}
 	}
 );

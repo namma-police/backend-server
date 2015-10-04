@@ -9,6 +9,7 @@ define(
 			getInitialState: function(){
 				return {
 					userId: this.props.userId,
+					displayName: this.props.displayName,
 					userType: this.props.userType,
 					currentLocation: null
 				}			
@@ -23,7 +24,7 @@ define(
 			processAddress: function(placeInfo){
 				var postData = {
 					userId: this.props.userId,
-					displayName: 'Anantha',
+					displayName: this.props.displayName,
 					coordinates: [placeInfo.geometry.location.lat(),placeInfo.geometry.location.lng()]
 				},
 				successCallback = function(data){
@@ -54,7 +55,13 @@ define(
 			    	<div id="CitizenPage">
 			    		<button id="logoutButton" onClick={this.logout}>logout</button>
 			    		<div>
-			    			Welcome, {this.state.userId}
+			    			user type: {this.state.userType}
+			    		</div>
+			    		<div>	
+			    			user id: {this.state.userId}
+			    		</div>
+			    		<div>
+			    			display name: {this.state.displayName}
 			    		</div>
 			    			
 			    		<input type="text" id="autocomplete" />

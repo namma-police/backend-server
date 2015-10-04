@@ -14,14 +14,9 @@ define(
 
             app.post('/request/acknowledge', function (req, res) {
                 debug('request to /request/acknowledge');
-                console.log(req.body);
-                responseData = {
-                    pastData: req.body.citizenid
-                }
-                res.json(responseData);
-                // policeApiHandlers.acknowledgeRequest(req, function(responseData){
-                    
-                // });
+                policeApiHandlers.acknowledgeRequest(req, function(responseData){
+                    res.json(responseData);
+                });
             });
 
             app.get('/location/citizen/:citizenId', function (req, res){

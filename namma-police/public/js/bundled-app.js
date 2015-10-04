@@ -21,14 +21,15 @@ webpackJsonp([1],[
 			console.log('Loaded the Home Page');
 			var documentBody = document.body,
 				userId = documentBody.getAttribute('data-userid'),
+				displayName = documentBody.getAttribute('data-display-name'),
 				userType = documentBody.getAttribute('data-user-type');
 
 			if(userId === ''){
 				React.render(React.createElement(LoginPage, null), document.getElementById('componentContainer'))
 			}else if(userType === 'citizen'){
-				React.render(React.createElement(CitizenPage, {userId: userId, userType: userType}), document.getElementById('componentContainer'));
+				React.render(React.createElement(CitizenPage, {userId: userId, userType: userType, displayName: displayName}), document.getElementById('componentContainer'));
 			}else if(userType === 'police'){
-				React.render(React.createElement(PolicePage, {userId: userId, userType: userType}), document.getElementById('componentContainer'));
+				React.render(React.createElement(PolicePage, {userId: userId, userType: userType, displayName: displayName}), document.getElementById('componentContainer'));
 			}
 		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
@@ -204,6 +205,7 @@ webpackJsonp([1],[
 				getInitialState: function(){
 					return {
 						userId: this.props.userId,
+						displayName: this.props.displayName,
 						userType: this.props.userType,
 						currentLocation: null
 					}			
@@ -218,7 +220,7 @@ webpackJsonp([1],[
 				processAddress: function(placeInfo){
 					var postData = {
 						userId: this.props.userId,
-						displayName: 'Anantha',
+						displayName: this.props.displayName,
 						coordinates: [placeInfo.geometry.location.lat(),placeInfo.geometry.location.lng()]
 					},
 					successCallback = function(data){
@@ -249,7 +251,13 @@ webpackJsonp([1],[
 				    	React.createElement("div", {id: "CitizenPage"}, 
 				    		React.createElement("button", {id: "logoutButton", onClick: this.logout}, "logout"), 
 				    		React.createElement("div", null, 
-				    			"Welcome, ", this.state.userId
+				    			"user type: ", this.state.userType
+				    		), 
+				    		React.createElement("div", null, 
+				    			"user id: ", this.state.userId
+				    		), 
+				    		React.createElement("div", null, 
+				    			"display name: ", this.state.displayName
 				    		), 
 				    			
 				    		React.createElement("input", {type: "text", id: "autocomplete"}), 
@@ -278,6 +286,7 @@ webpackJsonp([1],[
 				getInitialState: function(){
 					return {
 						userId: this.props.userId,
+						displayName: this.props.displayName,
 						userType: this.props.userType,
 						currentLocation: null,
 						citizenDetails: {}
@@ -304,9 +313,18 @@ webpackJsonp([1],[
 
 				},
 				acknowledgeRequest: function(){
+					var citizenDetails = this.state.citizenDetails;
 					var postData = {
-						
-					}
+						userId: citizenDetails.userId,
+						displayName: citizenDetails.displayName,
+						coordinates: citizenDetails.location.coordinates
+					},
+					successCallback = function(data){
+						console.log(data);
+					}.bind(this);
+
+					commonFunctions.makeAjaxPost('/request/acknowledge', postData, successCallback);
+
 				},
 				logout: function(){
 					window.location.replace('/logout');
@@ -328,7 +346,13 @@ webpackJsonp([1],[
 				    	React.createElement("div", {id: "PolicePage"}, 
 				    		React.createElement("button", {id: "logoutButton", onClick: this.logout}, "logout"), 
 				    		React.createElement("div", null, 
-				    			"Welcome, ", this.state.userId
+				    			"user type: ", this.state.userType
+				    		), 
+				    		React.createElement("div", null, 
+				    			"user id: ", this.state.userId
+				    		), 
+				    		React.createElement("div", null, 
+				    			"display name: ", this.state.displayName
 				    		), 
 				    		React.createElement("button", {id: "acknowledge", onClick: this.acknowledgeRequest}, "Acknowledge"), 
 				    		React.createElement("input", {type: "text", id: "autocomplete"}), 

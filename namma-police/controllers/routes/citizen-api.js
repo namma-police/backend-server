@@ -12,7 +12,7 @@ define(
             var app = expressInstance,
                 debug = require('debug')('nammapolice:police-api');
 
-            app.post('/location/police', function (req, res) { //to request a cop
+            app.post('/location/police', function (req, res) { //Fetches nearby cops
                 debug('request to /location/police');
                 citizenApiHandlers.getNearbyCops(req, function(responseData){
                     res.json(responseData);
@@ -21,16 +21,14 @@ define(
 
             app.post('/help/request', function (req, res) { //to request a cop
                 debug('request to /request/help');
-                citizenApiHandlers.requestCop(req, function(responseData){
-                    res.json(responseData);
-                    debug(responseData);
-                    var citizenData = req.session.user;
-                    citizenData.location = responseData.location;
+                citizenApiHandlers.requestCop(req, function(citizenData, policeData){
+                    res.json(policeData);
+                    debug(citizenData);
 
-                    for(var i=0; i<responseData.policeData.length; i++){
+                    for(var i=0; i<policeData.policeData.length; i++){
                         //
-                        debug(responseData.policeData[i].policeId);
-                        io.emit(responseData.policeData[i].policeId+'-waiting-for-requests', citizenData);
+                        debug(policeData.policeData[i].policeId);
+                        io.emit(policeData.policeData[i].policeId+'-waiting-for-requests', citizenData);
                     }    
                 });
             });

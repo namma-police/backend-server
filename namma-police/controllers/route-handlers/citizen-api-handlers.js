@@ -20,13 +20,15 @@ define(
                 }else{
                     var resultData = results.map(function(policeDetails){
                         return {
-                            location: {
-                                address: policeDetails.location.address,
-                                coordinates: [policeDetails.location.coordinates[1], policeDetails.location.coordinates[0]]
-                            }
+                            address: policeDetails.location.address,
+                            coordinates: [policeDetails.location.coordinates[1], policeDetails.location.coordinates[0]]
                         };
                     });
-                    responseCallback(resultData);
+
+                    var responseData = {
+                        locationDetails: resultData
+                    }
+                    responseCallback(responseData);
                 }
             });
         }
@@ -59,46 +61,49 @@ define(
                             };
                         });
                         //debug(resultData);
-                        var policeData = underscore.filter(resultArray, function(policeDetails){
+                        var policeArray = underscore.filter(resultArray, function(policeDetails){
                             return policeDetails.rating >= 50
                         });
 
-                        if(policeData.length === 0){
-                            policeData = resultArray;
+                        if(policeArray.length === 0){
+                            policeArray = resultArray;
                         };
-
-                        var resultData = {
+                        var citizenData = {
+                            userId: req.body.userId,
+                            displayName: req.body.displayName,
                             location: {
                                 coordinates: req.body.coordinates,
                                 address: results.one.results[0].formatted_address
-                            },
-                            policeData: policeData
-                        };
-                        
-                        responseCallback(resultData); 
-
-                        callback(null, resultArray);
-                    }],
-
-                    four: ['three', function(callback, results){
-                        var date = new Date();
-                        var reqObj = {
-                            occurrenceTime: date.getTime(),
-                            citizenId: req.body.userId,
-                            citizenDisplayName: req.body.displayName,
-                            location: {
-                                type: "Point",
-                                address: results.one.results[0].formatted_address,
-                                coordinates: coordinates
                             }
                         }
-                        citizenDbApi.registerNewIssue(reqObj, callback);
-                    }]
+                        var policeData = {
+                            policeData: policeArray
+                        };
+                        
+                        responseCallback(citizenData, policeData); 
+
+                        callback(null, citizenData);
+                    }],
+
+                    // four: ['three', function(callback, results){
+                    //     var date = new Date();
+                    //     var reqObj = {
+                    //         occurrenceTime: date.getTime(),
+                    //         citizenId: req.body.userId,
+                    //         citizenDisplayName: req.body.displayName,
+                    //         location: {
+                    //             type: "Point",
+                    //             address: results.one.results[0].formatted_address,
+                    //             coordinates: coordinates
+                    //         }
+                    //     }
+                    //     citizenDbApi.registerNewIssue(reqObj, callback);
+                    // }]
                 },function(err, results){
                     if(err){
                         debug(err);
                     }else{
-                        //debug(results);
+                        //debug(results.four);
                     }
                 }    
             );

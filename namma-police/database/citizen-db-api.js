@@ -69,22 +69,5 @@ define(
 				});
 			});
 		}
-
-		exports.registerNewIssue = function(reqObj, callback){
-			mongoDBClient.collection("issuesData").insert({
-				citizenId: reqObj.citizenId,
-				citizenDisplayName: reqObj.citizenDisplayName,
-				occurrenceTime: reqObj.occurrenceTime,
-				//policeId: reqObj.policeId,
-				citizenLocation: reqObj.location,
-				status: 'active' //active/engaged/closed/fir
-			}, function(err, results){
-				if(err){
-					callback(err);
-				}else{
-					callback(null, results);
-				}
-			});
-		}
 	}
 );

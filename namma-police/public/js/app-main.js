@@ -10,14 +10,15 @@ define(
 		console.log('Loaded the Home Page');
 		var documentBody = document.body,
 			userId = documentBody.getAttribute('data-userid'),
+			displayName = documentBody.getAttribute('data-display-name'),
 			userType = documentBody.getAttribute('data-user-type');
 
 		if(userId === ''){
 			React.render(<LoginPage />, document.getElementById('componentContainer'))
 		}else if(userType === 'citizen'){
-			React.render(<CitizenPage userId={userId} userType={userType}/>, document.getElementById('componentContainer'));
+			React.render(<CitizenPage userId={userId} userType={userType} displayName={displayName}/>, document.getElementById('componentContainer'));
 		}else if(userType === 'police'){
-			React.render(<PolicePage userId={userId} userType={userType}/>, document.getElementById('componentContainer'));
+			React.render(<PolicePage userId={userId} userType={userType} displayName={displayName}/>, document.getElementById('componentContainer'));
 		}
 	}
 );
