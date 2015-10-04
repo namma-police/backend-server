@@ -14,8 +14,11 @@ define(
 
             app.post('/request/acknowledge', function (req, res) {
                 debug('request to /request/acknowledge');
-                policeApiHandlers.acknowledgeRequest(req, function(responseData){
-                    res.json(responseData);
+                policeApiHandlers.acknowledgeRequest(req, function(citizenData, policeData){
+                    debug(citizenData);
+                    debug(policeData);
+                    io.emit(citizenData.citizenDetails.userId+'-waiting-for-help', policeData);
+                    res.json(citizenData);
                 });
             });
 

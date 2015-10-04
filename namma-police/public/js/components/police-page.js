@@ -11,7 +11,7 @@ define(
 					userId: this.props.userId,
 					displayName: this.props.displayName,
 					userType: this.props.userType,
-					currentLocation: null,
+					coordinates: ['12.934689', '77.61206400000003'],
 					citizenDetails: {}
 				}			
 			},
@@ -26,21 +26,32 @@ define(
 				
 			},
 			processAddress: function(placeInfo){
+				var that = this;
 				var postData = {
+					userId: that.state.userId,
 					coordinates: [placeInfo.geometry.location.lat(),placeInfo.geometry.location.lng()]
 				},
 				successCallback = function(data){
 					console.log(data);
-				};
+					this.setState({coordinates: postData.coordinates});
+				}.bind(this);
 				commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
 
 			},
 			acknowledgeRequest: function(){
-				var citizenDetails = this.state.citizenDetails;
+				var citizenDetails = this.state.citizenDetails,
+					that = this;
 				var postData = {
-					userId: citizenDetails.userId,
-					displayName: citizenDetails.displayName,
-					coordinates: citizenDetails.location.coordinates
+					citizenDetails: {
+						userId: citizenDetails.userId,
+						displayName: citizenDetails.displayName,
+						coordinates: citizenDetails.location.coordinates
+					},
+					policeDetails: {
+						userId: that.state.userId,
+						displayName: that.state.displayName,
+						coordinates: that.state.coordinates
+					}
 				},
 				successCallback = function(data){
 					console.log(data);

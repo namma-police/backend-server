@@ -16,11 +16,45 @@ define(
 			dataTypes = configCassandra.dataTypes(),
 			that = this,
 			debug = require('debug')('nammapolice:citizen-db-api');
+
+		exports.getCitizenDetails = function(reqObj, callback){
+			mongoDBClient.collection("citizensData").findOne({
+				phone: reqObj.userId
+			}, function(err, results){
+				var resultData = {};
+				if(err){
+					resultData = {
+						error: err,
+						message: 'Execute failed in getcitizenDetails'
+					};
+					callback(resultData);
+				}else{
+					if(results){
+						resultData = {
+							userId: results.userId,
+							phone: results.phone,
+							displayName: results.displayName,
+							email: results.email,
+							password: results.password
+						};
+					}else{
+						resultData = {
+							userId: null,
+							phone: null,
+							displayName: null,
+							email: null,
+							password: null
+						};
+					}
+					callback(null, resultData);
+				}	
+			});	
+		}
 		
 		exports.updateCitizenLocation = function(reqObj, callback){
 			mongoDBClient.collection("citizensData").ensureIndex( { "location" : "2dsphere" }, function(){
 				mongoDBClient.collection("citizensData").update({
-					phone: reqObj.phone
+					userId: reqObj.phone
 				},{
 					$set: {
 						location: {

@@ -31,7 +31,7 @@ define(
 				}else{
 					if(results){
 						resultData = {
-							citizenId: results.citizenId,
+							userId: results.userId,
 							phone: results.phone,
 							displayName: results.displayName,
 							email: results.email,
@@ -39,7 +39,7 @@ define(
 						};
 					}else{
 						resultData = {
-							citizenId: null,
+							userId: null,
 							phone: null,
 							displayName: null,
 							email: null,
@@ -54,7 +54,7 @@ define(
 		
 		exports.getPoliceDetails = function(reqObj, callback){
 			mongoDBClient.collection("policeData").findOne({
-				policeId: reqObj.policeId
+				userId: reqObj.userId
 			}, function(err, results){
 				var resultData = {};
 				if(err){
@@ -66,7 +66,7 @@ define(
 				}else{
 					if(results){
 						resultData = {
-							policeId: results.policeId,
+							userId: results.userId,
 							phone: results.phone,
 							displayName: results.displayName,
 							email: results.email,
@@ -74,7 +74,7 @@ define(
 						};
 					}else{
 						resultData = {
-							policeId: null,
+							userId: null,
 							phone: null,
 							displayName: null,
 							email: null,
@@ -88,7 +88,7 @@ define(
 
 		exports.registerNewCitizen = function(reqObj, callback){
 			mongoDBClient.collection("citizensData").insert({
-				citizenId: reqObj.phone,
+				userId: reqObj.phone,
 				displayName: reqObj.displayName,
 				phone: reqObj.phone,
 				email: reqObj.email,
@@ -105,7 +105,7 @@ define(
 					callback(resultData);
 				}else{
 					resultData = {
-						citizenId: reqObj.phone,
+						userId: reqObj.phone,
 						displayName: reqObj.displayName	
 					}
 					callback(null, resultData);
@@ -115,7 +115,7 @@ define(
 
 		exports.registerNewPolice = function(reqObj, callback){
 			mongoDBClient.collection("policeData").insert({
-				policeId: reqObj.policeId,
+				userId: reqObj.userId,
 				displayName: reqObj.displayName,
 				phone: reqObj.phone,
 				email: reqObj.email,
@@ -133,7 +133,7 @@ define(
 					callback(resultData);
 				}else{
 					resultData = {
-						policeId: reqObj.policeId,
+						userId: reqObj.userId,
 						displayName: reqObj.displayName,
 						phone: reqObj.phone
 					}

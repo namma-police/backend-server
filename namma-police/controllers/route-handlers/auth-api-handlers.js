@@ -41,7 +41,7 @@ define(
                 if(err){
                     debug(err);
                 }else{
-                    if(resultData.policeid){
+                    if(resultData.userId){
                         responseData = {
                             status: 'notavailable'
                         }
@@ -79,7 +79,7 @@ define(
                             debug(err);
                         }else{
                             resultData = {
-                                userId: resultData.citizenId,
+                                userId: resultData.userId,
                                 displayName: resultData.displayName,
                                 status: 'loggedIn',
                                 userType: 'citizen'
@@ -128,7 +128,7 @@ define(
                             debug(err);
                         }else{
                             resultData = {
-                                userId: resultData.policeId,
+                                userId: resultData.userId,
                                 displayName: resultData.displayName,
                                 status: 'loggedIn',
                                 userType: 'police'
@@ -164,7 +164,7 @@ define(
                                     if(res){
                                         debug('success')
                                         resultData = {
-                                            userId: results[0].citizenId,
+                                            userId: results[0].userId,
                                             displayName: results[0].displayName,
                                             status: 'loggedIn',
                                             userType: 'citizen'
@@ -212,7 +212,7 @@ define(
                         debug(err);
                     }else{
                         var resultData = {};
-                        if(results[0].policeId){
+                        if(results[0].userId){
                             bcrypt.compare(req.body.password, results[0].password, function(err, res) {
                                 if (err){
                                     debug(err);
@@ -220,7 +220,7 @@ define(
                                     if(res){
                                         debug('success')
                                         resultData = {
-                                            userId: results[0].policeId,
+                                            userId: results[0].userId,
                                             displayName: results[0].displayName,
                                             status: 'loggedIn',
                                             userType: 'police'

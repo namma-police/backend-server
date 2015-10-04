@@ -12,23 +12,25 @@ define(
 
         function acknowledgeRequest(req, responseCallback){
             debug('api-handler acknowledgeRequest');
+            debug(req.body.citizenDetails);
             var citizenCoordinates = [Number(req.body.citizenDetails.coordinates[1]), Number(req.body.citizenDetails.coordinates[0])];
 
-            var policeCoordinates = [Number(req.body.policeCoordinates.coordinates[1]), Number(req.body.policeCoordinates.coordinates[0])];
+            var policeCoordinates = [Number(req.body.policeDetails.coordinates[1]), Number(req.body.policeDetails.coordinates[0])];
 
             async.auto(
                 {
                     one: function(callback) {
-                        googleMapsApi.getlatLngDetails(req.body.citizenCoordinates, callback);
+                        googleMapsApi.getlatLngDetails(req.body.citizenDetails.coordinates, callback);
                     },
                     two: function(callback) {
-                        googleMapsApi.getlatLngDetails(req.body.policeCoordinates, callback);
+                        googleMapsApi.getlatLngDetails(req.body.policeDetails.coordinates, callback);
                     },
                     three: ['two', function(callback, results){
 
                         var date = new Date();
 
                         var citizenDetails = req.body.citizenDetails;
+
                         citizenDetails.location =  {
                             type: "Point",
                             address: results.one.results[0].formatted_address,
@@ -54,11 +56,17 @@ define(
                     if(err){
                         debug(err);
                     }else{
-                        var responseData = {
-                            issueId: results.three["_id"],
+                        debug(results.three);
+                        var citizenData = {
+                            issueId: results.three.issueId,
+                            citizenDetails: results.three["citizenDetails"]
+                        },
+
+                        policeData = {
+                            issueId: results.three.issueId,
                             policeDetails: results.three["policeDetails"]
-                        }
-                        debug(responseData);
+                        };
+                        responseCallback(citizenData, policeData);
                     }
                 }    
             );
@@ -81,7 +89,7 @@ define(
                     },
                     two: ['one', function (callback, results){
                         var locationData = {
-                            policeId: req.session.user.userId,
+                            userId: req.body.userId,
                             address: results.one.results[0].formatted_address,
                             coordinates: [Number(req.body.coordinates[1]), Number(req.body.coordinates[0])]
                         }

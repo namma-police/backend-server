@@ -27,13 +27,13 @@ define(
 
                     for(var i=0; i<policeData.policeData.length; i++){
                         //
-                        debug(policeData.policeData[i].policeId);
-                        io.emit(policeData.policeData[i].policeId+'-waiting-for-requests', citizenData);
+                        debug(policeData.policeData[i].userId);
+                        io.emit(policeData.policeData[i].userId+'-waiting-for-requests', citizenData);
                     }    
                 });
             });
 
-            app.get('/location/police/:policeId', function (req, res){ //to get cop's location
+            app.get('/location/police/:userId', function (req, res){ //to get cop's location
                 debug('Inside login');
                 citizenApiHandlers.getCopLocation(req, function(responseData){                   
                    res.json(responseData); 

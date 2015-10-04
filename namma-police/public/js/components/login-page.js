@@ -27,7 +27,7 @@ define(
 			verifyPoliceId: function(){
 				var policeid = document.getElementById('policeIdInput').value;
 				var postData = {
-					policeid: policeid
+					userId: policeid
 				},
 				successcallback = function(data){
 					console.log(data);
@@ -63,7 +63,7 @@ define(
 
 				var postData = {
 					displayName: displayName,
-					policeId: policeId,
+					userId: policeId,
 					phone: phone,
 					email: email,
 					password: password
@@ -94,7 +94,7 @@ define(
 					password = document.getElementById('policeLoginPassword').value;
 
 				var postData = {
-					policeId: policeId,
+					userId: policeId,
 					password: password
 				},
 				successcallback = function(data){

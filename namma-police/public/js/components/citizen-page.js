@@ -11,13 +11,13 @@ define(
 					userId: this.props.userId,
 					displayName: this.props.displayName,
 					userType: this.props.userType,
-					currentLocation: null
+					coordinates: null
 				}			
 			},
 			componentDidMount:function(){
 				console.log('triggered once after initial render');
 
-				socket.on('waiting-for-help', function(postData){
+				socket.on(this.props.userId+'-waiting-for-help', function(postData){
 					console.log(postData);
 				});
 			},
@@ -29,6 +29,7 @@ define(
 				},
 				successCallback = function(data){
 					console.log(data);
+					this.setState({coordinates: postData.coordinates})
 				}.bind(this);
 				
 				commonFunctions.makeAjaxPost('/help/request', postData, successCallback);

@@ -18,7 +18,7 @@ define(
 		exports.updatePoliceLocation = function(reqObj, callback){
 			mongoDBClient.collection("policeData").ensureIndex( { "location" : "2dsphere" }, function(){
 				mongoDBClient.collection("policeData").update({
-					policeId: reqObj.policeId
+					userId: reqObj.userId
 				},{
 					$set: {
 						location: {
@@ -56,7 +56,8 @@ define(
 				if(err){
 					callback(err);
 				}else{
-					callback(null, results);
+					reqObj.issueId = results.insertedIds[0];
+					callback(null, reqObj);
 				}
 			});
 		}

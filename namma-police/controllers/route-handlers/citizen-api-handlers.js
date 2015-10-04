@@ -5,7 +5,7 @@ define(
     [
         'async',
         'underscore',
-        '../../database/citizen-db-api',    
+        '../../database/citizen-db-api',  
         '../utilities/google-maps-api'
     ], 
     function (async, underscore, citizenDbApi, googleMapsApi) {
@@ -50,7 +50,7 @@ define(
                     three: ['two', function(callback, results){
                         var resultArray = results.two.map(function(policeDetails){
                             return {
-                                policeId: policeDetails.policeId,
+                                userId: policeDetails.userId,
                                 displayName: policeDetails.displayName,
                                 phone: policeDetails.phone,
                                 location: {
@@ -70,6 +70,7 @@ define(
                         };
                         var citizenData = {
                             userId: req.body.userId,
+                            phone: req.body.userId,
                             displayName: req.body.displayName,
                             location: {
                                 coordinates: req.body.coordinates,
@@ -89,7 +90,7 @@ define(
                     //     var date = new Date();
                     //     var reqObj = {
                     //         occurrenceTime: date.getTime(),
-                    //         citizenId: req.body.userId,
+                    //         userId: req.body.userId,
                     //         citizenDisplayName: req.body.displayName,
                     //         location: {
                     //             type: "Point",
