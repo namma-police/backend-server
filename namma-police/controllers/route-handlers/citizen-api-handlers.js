@@ -16,7 +16,7 @@ define(
             if(typeof(reqBody.coordinates) === 'string'){
                 reqBody.coordinates = JSON.parse(reqBody.coordinates)
             }
-            
+
             var coordinates = [Number(reqBody.coordinates[1]), Number(reqBody.coordinates[0])];
 
             citizenDbApi.getNearestCops(coordinates, function(err, results){
@@ -129,6 +129,16 @@ define(
 
         function endIssue(req, responseCallback){
             debug('api-handler endIssue');
+            citizenDbApi.endIssue(req.body.issueId, function(err, result){
+                if(err){
+                    debug(err);
+                }else{
+                    var responseData = {
+                        status: 'resolved'
+                    }
+                    responseCallback(responseData);
+                }
+            })
         }
 
         function rateCop(req, responseCallback){

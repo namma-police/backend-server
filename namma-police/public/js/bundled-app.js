@@ -340,6 +340,17 @@ webpackJsonp([1],[
 					commonFunctions.makeAjaxPost('/request/acknowledge', postData, successCallback);
 
 				},
+				closeIssue: function(){
+					var that = this;
+					var postData = {
+						issueId: that.state.issueId
+					},
+					successCallback = function(data){
+						console.log(data);
+					}.bind(this);
+
+					commonFunctions.makeAjaxPost('/help/acknowledge', postData, successCallback);	
+				},
 				logout: function(){
 					window.location.replace('/logout');
 				},
@@ -368,7 +379,8 @@ webpackJsonp([1],[
 				    		React.createElement("div", null, 
 				    			"display name: ", this.state.displayName
 				    		), 
-				    		React.createElement("button", {id: "acknowledge", onClick: this.acknowledgeRequest}, "Acknowledge"), 
+				    		React.createElement("button", {id: "acknowledge", onClick: this.acknowledgeRequest}, "Respond"), 
+				    		React.createElement("button", {onClick: this.closeIssue}, "End issue"), 
 				    		React.createElement("input", {type: "text", id: "autocomplete"}), 
 				    		React.createElement("div", {id: "map-container", style: style}, 
 				    			React.createElement(MapWidget, {options: mapOptions})

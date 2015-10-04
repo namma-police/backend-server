@@ -142,9 +142,22 @@ define(
 						});
 					}
 				}
-			});
+			});	
+		}
 
-			
+		exports.endIssue = function(issueId, callback){
+			debug(issueId);
+			mongoDBClient.collection("issuesData").update({
+				_id: issueId
+			},{
+				$set: {status: 'resolved'}
+			},function(err, results){
+				if(err){
+					callback(err);
+				}else{
+					callback(null, 'resolved');
+				}
+			});
 		}
 	}
 );

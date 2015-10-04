@@ -62,6 +62,17 @@ define(
 				commonFunctions.makeAjaxPost('/request/acknowledge', postData, successCallback);
 
 			},
+			closeIssue: function(){
+				var that = this;
+				var postData = {
+					issueId: that.state.issueId
+				},
+				successCallback = function(data){
+					console.log(data);
+				}.bind(this);
+
+				commonFunctions.makeAjaxPost('/help/acknowledge', postData, successCallback);	
+			},
 			logout: function(){
 				window.location.replace('/logout');
 			},
@@ -90,7 +101,8 @@ define(
 			    		<div>
 			    			display name: {this.state.displayName}
 			    		</div>
-			    		<button id="acknowledge" onClick={this.acknowledgeRequest}>Acknowledge</button> 
+			    		<button id="acknowledge" onClick={this.acknowledgeRequest}>Respond</button>
+			    		<button  onClick={this.closeIssue}>End issue</button> 
 			    		<input type="text" id="autocomplete" />
 			    		<div id="map-container" style={style}>
 			    			<MapWidget options = {mapOptions} />

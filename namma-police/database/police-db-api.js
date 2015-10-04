@@ -53,7 +53,6 @@ define(
 				if(err){
 					callback(err);
 				}else{
-					debug(results);
 					var resultData = {
 						issueId: issueId,
 						status: results.status
@@ -72,7 +71,6 @@ define(
 				if(err){
 					callback(err);
 				}else{
-					debug(results);
 					var resultData = {
 						issueId: issueId,
 						status: 'engaged'
