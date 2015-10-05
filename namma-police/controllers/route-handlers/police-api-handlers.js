@@ -4,22 +4,24 @@
 define(
     [
         'async',
-        '../../database/police-db-api',    
+        '../../database/police-db-api', 
+        '../../database/auth-db-api',   
         '../utilities/google-maps-api'
     ], 
-    function (async, policeDbApi, googleMapsApi) {
+    function (async, policeDbApi, authDbApi, googleMapsApi) {
         var debug = require('debug')('nammapolice:police-api-handlers');
 
         function acknowledgeRequest(req, responseCallback){
             debug('api-handler acknowledgeRequest');
             var reqBody = req.body;
-            if(typeof(reqBody.citizenDetails.coordinates) === 'string'){
-                reqBody.citizenDetails.coordinates = JSON.parse(reqBody.citizenDetails.coordinates)
+            if(typeof(reqBody.citizenDetails) === 'string'){
+                reqBody.citizenDetails = JSON.parse(reqBody.citizenDetails)
             }
-
-            var citizenCoordinates = [Number(reqBody.citizenDetails.coordinates[1]), Number(reqBody.citizenDetails.coordinates[0])];
-
-            var policeCoordinates = [Number(reqBody.policeDetails.coordinates[1]), Number(reqBody.policeDetails.coordinates[0])];
+            if(typeof(reqBody.policeDetails) === 'string'){
+                reqBody.policeDetails = JSON.parse(reqBody.policeDetails)
+            }
+            debug(reqBody);
+            var citizenCoordinates = [Number(reqBody.citizenDetails.location.coordinates[1]), Number(reqBody.citizenDetails.location.coordinates[0])];
 
             async.auto(
                 {
@@ -29,7 +31,7 @@ define(
 
                     two: ['one', function(callback, results) {
                         if(results.one.status === 'active'){
-                            googleMapsApi.getlatLngDetails(reqBody.citizenDetails.coordinates, callback);
+                            googleMapsApi.getlatLngDetails(reqBody.citizenDetails.location.coordinates, callback);
                         }else{
                             var result = {
                                 status: 'A police is already on it'
@@ -39,7 +41,8 @@ define(
                         
                     }],
                     three: ['two', function(callback, results) {
-                        googleMapsApi.getlatLngDetails(reqBody.policeDetails.coordinates, callback);
+                        authDbApi.getPoliceDetails(reqBody.policeDetails, callback)
+                        //googleMapsApi.getlatLngDetails(reqBody.policeDetails.coordinates, callback);
                     }]
                 },function(err, results){
                     if(err){
@@ -62,11 +65,8 @@ define(
                         var policeDetails = {
                             userId: reqBody.policeDetails.userId,
                             displayName: reqBody.policeDetails.displayName,
-                            phone: reqBody.policeDetails.phone,
-                            location: {
-                                address: results.three.results[0].formatted_address,
-                                coordinates: citizenCoordinates
-                            }
+                            //phone: reqBody.policeDetails.phone,
+                            location: results.three.location
                         }
 
                         var citizenData = {

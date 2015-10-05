@@ -26,8 +26,6 @@ define(
                     debug(citizenData);
 
                     for(var i=0; i<policeData.policeData.length; i++){
-                        //
-                        debug(policeData.policeData[i].userId);
                         io.emit(policeData.policeData[i].userId+'-waiting-for-requests', citizenData);
                     }    
                 });

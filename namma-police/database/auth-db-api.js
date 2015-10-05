@@ -70,7 +70,8 @@ define(
 							phone: results.phone,
 							displayName: results.displayName,
 							email: results.email,
-							password: results.password
+							password: results.password,
+							location: results.location
 						};
 					}else{
 						resultData = {
@@ -78,7 +79,8 @@ define(
 							phone: null,
 							displayName: null,
 							email: null,
-							password: null
+							password: null,
+							location: results.location
 						};
 					}
 					callback(null, resultData);

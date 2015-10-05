@@ -325,12 +325,11 @@ webpackJsonp([1],[
 						citizenDetails: {
 							userId: citizenDetails.userId,
 							displayName: citizenDetails.displayName,
-							coordinates: citizenDetails.location.coordinates
+							location: citizenDetails.location
 						},
 						policeDetails: {
 							userId: that.state.userId,
-							displayName: that.state.displayName,
-							coordinates: that.state.coordinates
+							displayName: that.state.displayName
 						}
 					},
 					successCallback = function(data){
