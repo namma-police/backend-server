@@ -36,6 +36,13 @@ define(
 				//commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
 
 			},
+			getCrimeData: function(){
+				var successCallback = function(data){
+					console.log(data);
+					this.refs.myMap.displayCrimeStats(data);
+				}.bind(this);
+				commonFunctions.makeAjaxGet('/issues', successCallback);
+			},
 			logout: function(){
 				window.location.replace('/logout');
 			},
@@ -43,9 +50,9 @@ define(
 		  		var mapOptions = {
 		  			displayMaps: true, 
 		  			autocompleteInput: '#autocomplete',
-		  			autocompleteCallback: this.processAddress,
-		  			latLng: [20.594, 78.963],
-		  			zoomLevel: 4,
+		  			autocompleteCallback: this.getCrimeData,
+		  			latLng: [12.9759849, 77.6345852],  
+		  			zoomLevel: 8,
 		  			animateMarker: false
 		  		},
 		  		style = {
@@ -67,7 +74,7 @@ define(
 			    			
 			    		<input type="text" id="autocomplete" />
 			    		<div id="map-container" style={style}>
-			    			<MapWidget options = {mapOptions} />
+			    			<MapWidget options = {mapOptions} ref='myMap'/>
 			    		</div>
 	 		    	</div>
 			    );

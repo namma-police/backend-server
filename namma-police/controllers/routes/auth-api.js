@@ -99,12 +99,12 @@ define(
                 });
             });
 
-            app.get('/', function (req, res) {
-                debug('request to /');
-                authApiHandlers.homeRender(req, function(argOne, argTwo){
-                    res.render(argOne, argTwo);
-                });
-            });
+            // app.get('/', function (req, res) {
+            //     debug('request to /');
+            //     authApiHandlers.homeRender(req, function(argOne, argTwo){
+            //         res.render(argOne, argTwo);
+            //     });
+            // });
         }
         return {
             initialize: initialize

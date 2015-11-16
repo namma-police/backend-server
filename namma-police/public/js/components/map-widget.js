@@ -67,7 +67,6 @@ define(
                 zoom: options.zoomLevel,
                 center: this.mapComponents.latLng,
                 zoomControl: true,
-
             }
 
             this.mapComponents.geocoder = new google.maps.Geocoder(),
@@ -249,6 +248,59 @@ define(
             });
 
             boundingBox.setMap(that.mapComponents.map);
+        },
+        displayCrimeStats: function(data){
+            var that = this;
+
+            this.mapComponents.map.data.addGeoJson(data);
+
+            this.mapComponents.map.data.setStyle(function(feature) {
+                var color, status = feature.getProperty('status');
+                switch(status){
+                    case 'active':
+                        color = '#ff0000';
+                        break;
+                    case 'engaged':
+                        color = '#ffff00';
+                        break;
+                    case 'resolved':
+                        color = '#009933';
+                        break;
+                }
+                return(
+                    {
+                        icon: {
+                            scale: 12,
+                            path: google.maps.SymbolPath.CIRCLE,
+                            fillColor: color,
+                            fillOpacity: 0.35,
+                            strokeWeight: 0
+                        }
+                    }
+                );
+            });
+
+            var infoWindow = new google.maps.InfoWindow({
+                maxWidth:250
+            });
+
+            this.mapComponents.map.data.addListener('mouseover', function (event) { 
+                var address = event.feature.getProperty('address'),
+                    occurrenceTime = new Date(event.feature.getProperty('occurrenceTime')),
+                    status = event.feature.getProperty('status');
+
+                var content = '<div> <strong>Address:</strong> '+address+'</div>';
+                    content += '<div><strong>Time of Occurrence:</strong> '+occurrenceTime+'</div>';
+                    content+= '<div><strong>Status:</strong> '+status+'</div>';
+                    
+                infoWindow.setPosition(event.latLng)
+                infoWindow.setContent(content);
+                infoWindow.open(that.mapComponents.map);
+            });
+
+            this.mapComponents.map.data.addListener('mouseout', function (event) { 
+                infoWindow.close();
+            });
         },
         refreshMaps: function(){
             google.maps.event.trigger(this.mapComponents.map, 'resize');

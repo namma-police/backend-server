@@ -179,6 +179,35 @@ define(
                 }
             ); 
         };
+
+        function getIssues(req, responseCallback){
+            debug('inside getIssues');
+            citizenDbApi.getIssues(function(err, resultData){
+                if(err){
+                    debug(err);
+                }else{
+                    var geoJsonData = resultData.issues.map(function(issueDetails){
+                        return {
+                            type: 'Feature',
+                            geometry: {
+                                type : "Point",
+                                coordinates: issueDetails.citizenDetails.location.coordinates
+                            },
+                            properties: {
+                                address: issueDetails.citizenDetails.location.address,
+                                occurrenceTime: issueDetails.occurrenceTime,
+                                status: issueDetails.status
+                            }
+                        }
+                    });
+                    var responseData = {
+                        type: 'FeatureCollection',
+                        features: geoJsonData
+                    } 
+                    responseCallback(responseData);
+                }
+            });
+        };
         
         return {
             getNearbyCops: getNearbyCops,
@@ -186,7 +215,8 @@ define(
             getCopLocation: getCopLocation,
             endIssue: endIssue,
             rateCop: rateCop,
-            updateCitizenLocation: updateCitizenLocation
+            updateCitizenLocation: updateCitizenLocation,
+            getIssues: getIssues
         }
     }
 );

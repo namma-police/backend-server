@@ -61,6 +61,12 @@ define(
                     });
                 }
             });
+
+            app.get('/issues', function (req, res){ //to get list of issues
+                citizenApiHandlers.getIssues(req, function(responseData){                   
+                   res.json(responseData); 
+                });
+            });
         }
         return {
             initialize: initialize

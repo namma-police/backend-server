@@ -232,6 +232,13 @@ webpackJsonp([1],[
 					//commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
 
 				},
+				getCrimeData: function(){
+					var successCallback = function(data){
+						console.log(data);
+						this.refs.myMap.displayCrimeStats(data);
+					}.bind(this);
+					commonFunctions.makeAjaxGet('/issues', successCallback);
+				},
 				logout: function(){
 					window.location.replace('/logout');
 				},
@@ -239,9 +246,9 @@ webpackJsonp([1],[
 			  		var mapOptions = {
 			  			displayMaps: true, 
 			  			autocompleteInput: '#autocomplete',
-			  			autocompleteCallback: this.processAddress,
-			  			latLng: [20.594, 78.963],
-			  			zoomLevel: 4,
+			  			autocompleteCallback: this.getCrimeData,
+			  			latLng: [12.9759849, 77.6345852],  
+			  			zoomLevel: 8,
 			  			animateMarker: false
 			  		},
 			  		style = {
@@ -263,7 +270,7 @@ webpackJsonp([1],[
 				    			
 				    		React.createElement("input", {type: "text", id: "autocomplete"}), 
 				    		React.createElement("div", {id: "map-container", style: style}, 
-				    			React.createElement(MapWidget, {options: mapOptions})
+				    			React.createElement(MapWidget, {options: mapOptions, ref: "myMap"})
 				    		)
 		 		    	)
 				    );
@@ -405,9 +412,8 @@ webpackJsonp([1],[
 	    		$.ajax({
 	    		    url: url,
 	    		    type: 'GET',
-	    		    data: postData,
 	    		    success: successCallback,
-	    		    error: function(httpRequest,status,error){
+	    		    error: function(httpRequest, status, error){
 	    		        console.log(error);
 	    		    }
 	    		});
@@ -419,7 +425,7 @@ webpackJsonp([1],[
 	    		    type: 'POST',
 	    		    data: postData,
 	    		    success: successCallback,
-	    		    error: function(httpRequest,status,error){
+	    		    error: function(httpRequest, status, error){
 	    		        console.log(error);
 	    		    }
 	    		});
@@ -498,7 +504,6 @@ webpackJsonp([1],[
 	                zoom: options.zoomLevel,
 	                center: this.mapComponents.latLng,
 	                zoomControl: true,
-
 	            }
 
 	            this.mapComponents.geocoder = new google.maps.Geocoder(),
@@ -680,6 +685,59 @@ webpackJsonp([1],[
 	            });
 
 	            boundingBox.setMap(that.mapComponents.map);
+	        },
+	        displayCrimeStats: function(data){
+	            var that = this;
+
+	            this.mapComponents.map.data.addGeoJson(data);
+
+	            this.mapComponents.map.data.setStyle(function(feature) {
+	                var color, status = feature.getProperty('status');
+	                switch(status){
+	                    case 'active':
+	                        color = '#ff0000';
+	                        break;
+	                    case 'engaged':
+	                        color = '#ffff00';
+	                        break;
+	                    case 'resolved':
+	                        color = '#009933';
+	                        break;
+	                }
+	                return(
+	                    {
+	                        icon: {
+	                            scale: 12,
+	                            path: google.maps.SymbolPath.CIRCLE,
+	                            fillColor: color,
+	                            fillOpacity: 0.35,
+	                            strokeWeight: 0
+	                        }
+	                    }
+	                );
+	            });
+
+	            var infoWindow = new google.maps.InfoWindow({
+	                maxWidth:250
+	            });
+
+	            this.mapComponents.map.data.addListener('mouseover', function (event) { 
+	                var address = event.feature.getProperty('address'),
+	                    occurrenceTime = new Date(event.feature.getProperty('occurrenceTime')),
+	                    status = event.feature.getProperty('status');
+
+	                var content = '<div> <strong>Address:</strong> '+address+'</div>';
+	                    content += '<div><strong>Time of Occurrence:</strong> '+occurrenceTime+'</div>';
+	                    content+= '<div><strong>Status:</strong> '+status+'</div>';
+	                    
+	                infoWindow.setPosition(event.latLng)
+	                infoWindow.setContent(content);
+	                infoWindow.open(that.mapComponents.map);
+	            });
+
+	            this.mapComponents.map.data.addListener('mouseout', function (event) { 
+	                infoWindow.close();
+	            });
 	        },
 	        refreshMaps: function(){
 	            google.maps.event.trigger(this.mapComponents.map, 'resize');

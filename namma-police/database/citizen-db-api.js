@@ -159,5 +159,28 @@ define(
 				}
 			});
 		}
+
+		exports.getIssues = function(callback){
+			mongoDBClient.collection("issuesData").find({},{ 
+				occurrenceTime: 1, 
+				status: 1,
+				"citizenDetails.location": 1,
+				_id: 0
+			}).toArray(function (err, results){
+				var resultData = {};
+				if(err){
+					resultData = {
+						error: err,
+						message: 'Could not fetch results'
+					};
+					callback(resultData);
+				}else{
+					var resultData = {
+						issues: results
+					};
+					callback(null, resultData);
+				}	
+			});	
+		}
 	}
 );

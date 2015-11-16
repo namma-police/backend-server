@@ -78,7 +78,30 @@ requirejs(
 
 		server.listen(config.development.server_port1, function () {
 		    debug('Server running on ' + config.development.server_port1);
-		    
+		    function homeRender(req, responseCallback){
+		        debug('inside homeRender');
+		        var argOne = 'index',
+		            argTwo = {};
+		        console.log(req.session.user);
+		        if(req.session.user){
+		            argTwo = {
+		                user_id: req.session.user.userId,
+		                status: req.session.user.status,
+		                display_name: req.session.user.displayName,
+		                user_type: req.session.user.userType
+		            };                        
+		        }
+		        else {
+		            argTwo = {
+		                user_id: null,
+		                status: null,
+		                display_name: null,
+		                user_type: null
+		            };
+		        }
+
+		        responseCallback(argOne, argTwo);
+		    };
 			async.parallel(
 				[
 					// function(callback){
@@ -95,6 +118,12 @@ requirejs(
 						debug(err);
 					}else{
 						debug(results);
+						expressInstance.get('/', function (req, res) {
+						    debug('request to /');
+						    homeRender(req, function(argOne, argTwo){
+						        res.render(argOne, argTwo);
+						    });
+						});
 						requirejs(['controllers/routes'],function(routes){
 							io.on('connection', function(socket){
 								routes.initialize(expressInstance, io, socket); //dB

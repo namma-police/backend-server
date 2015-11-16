@@ -1,74 +1,165 @@
-keyspace 
-	myapp_db
-  CREATE KEYSPACE myapp_db WITH replication = {   'class':'SimpleStrategy', 'replication_factor' : 1 };
+Database - 
+use nammapolice
 
-********************Column families********************************
+show collections - 
 
+citizensData
+issuesData
+policeData
 
-CREATE TABLE user_profiles (
-    user_name text,
-    android_devices list<text>,
-    cover_pictures list<text>,
-    cover_type text,
-    cover_videos list<text>,
-    cover_youtube_videos list<text>,
-    display_name text,
-    display_pictures list<text>,
-    email_status text,
-    emails set<text>,
-    facebook_data text,
-    gender text,
-    hierarchical_names list<text>,
-    hierarchy_urls list<text>,
-    last_login_date timestamp,
-    password text,
-    phone_numbers set<text>,
-    phone_status text,
-    place_id text,
-    posts int,
-    profile_creation_date timestamp,
-    subscribers int,
-    traction_factor int,
-    trust_factor int,
-    user_privilege text,
-    views int,
-    PRIMARY KEY ((user_name))
-)
+db.citizensData.find().pretty()
 
+{
+    "_id" : ObjectId("5610b705d55e4165398976a8"),
+    "userId" : "8553659345",
+    "displayName" : "ak",
+    "phone" : "8553659345",
+    "email" : "ak@toorq. com",
+    "password" : "$2a$10$hc1/TnhpidxgJ/mCEhGpdu1LWHXWIkNZ1SvTuDMbDWfTlrlYmv0UG",
+    "earnedRatings" : 5,
+    "totalRatings" : 5
+}
 
-CREATE TABLE location_posts (
-    location_url text,
-    post_category text,
-    post_date bigint,
-    post_id timeuuid,
-    audio_url text,
-    channel_names list<text>,
-    channel_types list<text>,
-    channel_urls list<text>,
-    display_name text,
-    display_picture text,
-    downvotes int,
-    hierarchical_names list<text>,
-    hierarchy_urls list<text>,
-    link_url text,
-    no_of_comments int,
-    picture_url text,
-    post_content text,
-    user_name text,
-    upvotes int,
-    video_url text,
-    youtube_url text,
-    PRIMARY KEY ((location_url, post_category), post_date, post_id)
-) 
-WITH CLUSTERING ORDER BY (post_date DESC, post_id DESC);
+db.citizensData.find().pretty()
 
+{
+    "_id" : ObjectId("5610efe4e18ebc3f64f5f83e"),
+    "userId" : "cop",
+    "displayName" : "cop",
+    "phone" : "cop",
+    "email" : "cop",
+    "password" : "$2a$10$uZqgYeRyOUU0ucUt/ej5w..tqYmLmrx9grqRJruONBTG8oM1yg1F2",
+    "earnedRatings" : 4,
+    "totalRatings" : 5,
+    "status" : "available",
+    "location" : {
+        "type" : "Point",
+        "address" : "1007-1008, 17th D Cross Rd, Stage 2, Eshwara Layout, Indiranagar, Bengaluru, Karnataka 560038, India",
+        "coordinates" : [
+            77.6345847,
+            12.9759496
+        ]
+    }
+}
 
+db.issuesData.find().pretty()
 
--------------------------------
-COPY PASTE FOR CONVENIENCE
+{
+    "_id" : ObjectId("563b030b7bcb56cd42ce79ba"),
+    "occurrenceTime" : 1446707979340,
+    "citizenDetails" : {
+        "userId" : "8553659345",
+        "displayName" : "ak",
+        "location" : {
+            "coordinates" : [
+                77.6345852,
+                12.9759849
+            ],
+            "address" : "1007/B, 17th D Cross Rd, Stage 2, Eshwara Layout, Indiranagar, Bengaluru, Karnataka 560038, India"
+        }
+    },
+    "status" : "resolved",
+    "policeDetails" : {
+        "userId" : "cop",
+        "displayName" : "cop",
+        "location" : {
+            "type" : "Point",
+            "address" : "1007-1008, 17th D Cross Rd, Stage 2, Eshwara Layout, Indiranagar, Bengaluru, Karnataka 560038, India",
+            "coordinates" : [
+                77.6345847,
+                12.9759496
+            ]
+        }
+    }
+}
 
-DROP TABLE user_profiles;
+db.locationsData.find().pretty()
+{
+    "locationId": 'blahblah'
+    "locationName" : "Indiranagar",
+    "location" : {
+        "type" : "Point",
+        "address" : "1007-1008, 17th D Cross Rd, Stage 2, Eshwara Layout, Indiranagar, Bengaluru, Karnataka 560038, India",
+        "coordinates" : [
+            77.6345847,
+            12.9759496
+        ]
+    },
+    "area": {
+        "type" : "Polygon",
+        "address" : "1007-1008, 17th D Cross Rd, Stage 2, Eshwara Layout, Indiranagar, Bengaluru, Karnataka 560038, India",
+        "coordinates" : [
+            [
+                74.0509625,
+                11.5823783
+            ], [
+                74.0509625,
+                18.4767361
+            ], [
+                78.5882952,
+                18.4767361
+            ], [
+                78.5882952,
+                11.5823783
+            ], [
+                74.0509625,
+                11.5823783
+            ]
+        ]
+    },
+    "hierarchicalNames": ['Indiranagar','Bangalore','Karnataka'],
+    "hierarchicalIds": ['123','456','789'],
+}
 
-___________________________________________
+Store or return crime data as a FeatureCollection for it to be displayed on a map.
 
-ALTER TABLE user_profiles ADD picture_url text;
+{
+    type: "FeatureCollection",
+    features: [
+        {
+            type: "feature",
+            geometry: {
+                coordinates: [77.6345259, 12.97595],
+                type: "Point"
+            }
+            properties: {
+                address: "1008-1010, 17th D Cross Rd, Stage 2, Eshwara Layout, Indiranagar, Bengaluru, Karnataka 560038, India",
+                occurrenceTime: 1444184700480,
+                status: "engaged"
+            }
+        }, {
+            type: "feature",
+            geometry: {
+                coordinates: [77.6345608, 12.9759562],
+                type: "Point"
+            }
+            properties: {
+                address: "1007-1008, 17th D Cross Rd, Stage 2, Eshwara Layout, Indiranagar, Bengaluru, Karnataka 560038, India",
+                occurrenceTime: 1444392851462,
+                status: "resolved"
+            }
+        }, {
+            type: "feature",
+            geometry: {
+                coordinates: [77.6345178, 12.9758651],
+                type: "Point"
+            }
+            properties: {
+                address: "1009/C, 20th Cross Rd, Stage 2, Eshwara Layout, Indiranagar, Bengaluru, Karnataka 560038, India",
+                occurrenceTime: 1446348360455,
+                status: "resolved"
+            }
+        }, {
+            type: "feature",
+            geometry: {
+                coordinates: [77.6345852, 12.9759849],
+                type: "Point"
+            }
+            properties: {
+                address: "1007/B, 17th D Cross Rd, Stage 2, Eshwara Layout, Indiranagar, Bengaluru, Karnataka 560038, India",
+                occurrenceTime: 1446707979340,
+                status: "resolved"
+            }
+        }
+    ]
+}

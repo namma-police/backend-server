@@ -8,9 +8,8 @@ define(
     		$.ajax({
     		    url: url,
     		    type: 'GET',
-    		    data: postData,
     		    success: successCallback,
-    		    error: function(httpRequest,status,error){
+    		    error: function(httpRequest, status, error){
     		        console.log(error);
     		    }
     		});
@@ -22,7 +21,7 @@ define(
     		    type: 'POST',
     		    data: postData,
     		    success: successCallback,
-    		    error: function(httpRequest,status,error){
+    		    error: function(httpRequest, status, error){
     		        console.log(error);
     		    }
     		});
