@@ -79,23 +79,22 @@ define(
                                     {/* User Account: style can be found in dropdown.less */}
                                     <li className="dropdown user user-menu">
                                         <a href="#" className="dropdown-toggle" data-toggle="dropdown">
-                                            <span className="hidden-xs">Alexander Pierce</span>
+                                            <span className="hidden-xs">{this.props.displayName}</span>
                                         </a>
                                         <ul className="dropdown-menu">
                                             {/* User image */}
                                             <li className="user-header">
                                                 <p>
-                                                    Alexander Pierce - Citizen
-                                                    <small>Member since Nov. 2012</small>
+                                                    {this.props.userId + " - "+ this.props.userType}
                                                 </p>
                                             </li>
                                             {/* Menu Footer */}
                                             <li className="user-footer">
                                                 <div className="pull-left">
-                                                    <a href="#" className="btn btn-default btn-flat">Statistics</a>
+                                                    <a href="/stats" className="btn btn-default btn-flat">Statistics</a>
                                                 </div>
                                                 <div className="pull-right">
-                                                    <a href="#" className="btn btn-default btn-flat">Sign out</a>
+                                                    <a href="/logout" className="btn btn-default btn-flat">Sign out</a>
                                                 </div>
                                             </li>
                                         </ul>

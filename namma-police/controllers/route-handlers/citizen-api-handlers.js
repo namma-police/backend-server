@@ -62,12 +62,13 @@ define(
                             location: {
                                 coordinates: coordinates,
                                 address: results.one.results[0].formatted_address
-                            }
+                            },
+                            type : "Point"
                         },
                         date = new Date();
                         var citizenObj = {
                             citizenDetails: citizenDetails,
-                            occurrenceTime: date.getTime()
+                            occurrenceTime: date.getTime(),
                         }
                         citizenDbApi.registerNewIssue(citizenObj, callback);
                     }],
@@ -129,7 +130,12 @@ define(
 
         function endIssue(req, responseCallback){
             debug('api-handler endIssue');
-            citizenDbApi.endIssue(req.body.issueId, function(err, result){
+            var date = new Date();
+            var data = {
+                issueId: req.body.issueId,
+                endTime: date.getTime()
+            }
+            citizenDbApi.endIssue(data, function(err, result){
                 if(err){
                     debug(err);
                 }else{

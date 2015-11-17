@@ -102,7 +102,11 @@ define(
 			    return (
 
 	 		    	<div className="wrapper" style={style3}>
-    					<HeaderBar notificationsCallback={this.acknowledgeRequest}/>
+	 		    		<HeaderBar 
+	 		    			userId={this.state.userId} 
+	 		    			displayName={this.state.displayName}
+	 		    			userType={this.state.userType} 
+	 		    			notificationsCallback={this.acknowledgeRequest} />
     					
     					<div className="content-wrapper" style={style2}>
     						<section className="content-header">

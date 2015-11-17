@@ -141,41 +141,48 @@ define(
 					     		<div id="citizenSignup" className="column signupSection">
 					     			<h5>Are you a new citizen?</h5>
 					     			<h3 className="signupHeader">Sign Up!</h3>
-					     			<p className="inputClassOne" >
+					     			<div className="inputClassOne" >
 					     				<input type="text" id="citizenDisplayNameInput" placeholder="Your full name"/>
-					     			</p>
-					     			<p className="inputClassOne" >
+					     			</div>
+					     			<br/>
+					     			<div className="inputClassOne" >
 					     				<input type="text" id="citizenPhone" placeholder="Enter your phone" onBlur={that.verifyCitizenPhone} />
 					     				<div id="signupNameMsg"></div>
-					     			</p>
-					     			<p className="inputClassOne" >
+					     			</div>
+					     			<br/>
+					     			<div className="inputClassOne" >
 					     				<input type="text" id="citizenEmailInput" placeholder="Enter your email" />
 					     				<br/><br/>
 					     				<input type="password" id="citizenPassword" placeholder="Enter your password" />
 					   					<div id="signupPwMsg"></div>
-					     			</p>
+					     			</div>
+					     			<br/>
 					     			<div onClick={that.registerCitizen} className="buttonClassOne" id="citizenSignupButton">Sign Up!</div>	
 					     		</div>
 
 					     		<div id="policeSignup" className="column signupSection">
 					     			<h5>Are you a new police?</h5>
 					     			<h3 className="signupHeader">Sign Up!</h3>
-					     			<p className="inputClassOne" >
+					     			<div className="inputClassOne" >
 					     				<input type="text" id="policeDisplayNameInput" placeholder="Your full name"/>
-					     			</p>
-					     			<p className="inputClassOne" >
+					     			</div>
+					     			<br/>
+					     			<div className="inputClassOne" >
 					     				<input type="text" id="policeIdInput" placeholder="Your ID" onBlur={that.verifyPoliceId}/>
-					     			</p>
-					     			<p className="inputClassOne" >
+					     			</div>
+					     			<br/>
+					     			<div className="inputClassOne" >
 					     				<input type="text" id="policePhone" placeholder="Enter your phone"/>
 					     				<div id="signupNameMsg"></div>
-					     			</p>
-					     			<p className="inputClassOne" >
+					     			</div>
+					     			<br/>
+					     			<div className="inputClassOne" >
 					     				<input type="text" id="policeEmailInput" placeholder="Enter your email" />
 					     				<br/><br/>
 					     				<input type="password" id="policePassword" placeholder="Enter your password" />
 					   					<div id="signupPwMsg"></div>
-					     			</p>
+					     			</div>
+					     			<br/>
 					     			<div onClick={that.registerPolice} className="buttonClassOne" id="policeSignupButton">Sign Up!</div>	
 					     		</div>
 					     	</div>

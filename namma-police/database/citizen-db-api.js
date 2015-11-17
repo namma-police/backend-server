@@ -145,12 +145,11 @@ define(
 			});	
 		}
 
-		exports.endIssue = function(issueId, callback){
-			debug(issueId);
+		exports.endIssue = function(reqObj, callback){
 			mongoDBClient.collection("issuesData").update({
-				_id: new ObjectID(issueId)
+				_id: new ObjectID(reqObj.issueId)
 			},{
-				$set: {status: 'resolved'}
+				$set: {status: 'resolved', endTime: reqObj.endTime}
 			},function(err, results){
 				if(err){
 					callback(err);
@@ -165,6 +164,8 @@ define(
 			//Using stream to process potentially millions of records
 			var stream = collection.find({},{ 
 				occurrenceTime: 1, 
+				responseTime: 1,
+				endTime: 1,
 				status: 1,
 				"citizenDetails.location": 1,
 				_id: 0

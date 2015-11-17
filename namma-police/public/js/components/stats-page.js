@@ -18,7 +18,7 @@ define(
 					displayName: this.props.displayName,
 					userType: this.props.userType,
 					coordinates: null,
-					noOfCrimes: '',
+					noOfCrimes: '0',
 					activeIssues: [],
 					engagedIssues: [],
 					resolvedIssues: []
@@ -83,7 +83,10 @@ define(
 			    return (
 
 	 		    	<div className="wrapper" style={style3}>
-    					<HeaderBar />
+    					<HeaderBar 
+    						userId={this.state.userId} 
+    						displayName={this.state.displayName}
+    						userType={this.state.userType} />
     					
     					<div className="content-wrapper" style={style2}>
     						<section className="content-header">
@@ -101,22 +104,22 @@ define(
     						<section className="content">
     							<div className="row">
     								<StatTile 
-    								    icon = 'ion-stats-bars' 
+    								    icon = 'fa-star' 
     								    stats = {''+this.state.noOfCrimes}
     								    subject = 'Total crimes' 
     								    theme = 'bg-aqua' />
     								<StatTile 
-    								    icon = 'ion-stats-bars' 
+    								    icon = 'fa-trophy' 
     								    stats = {''+this.state.resolvedIssues.length}
     								    subject = 'Resolved issues' 
     								    theme = 'bg-green' />
     								<StatTile 
-    								    icon = 'ion-stats-bars' 
+    								    icon = 'fa-hourglass-end' 
     								    stats = {''+this.state.engagedIssues.length}
     								    subject = 'Engaged issues' 
     								    theme = 'bg-yellow' />
     								<StatTile 
-    								    icon = 'ion-stats-bars' 
+    								    icon = 'fa-bolt' 
     								    stats = {''+this.state.activeIssues.length}
     								    subject = 'Unresolved issues' 
     								    theme = 'bg-red' />

@@ -16,13 +16,14 @@ define(
 					userId: this.props.userId,
 					displayName: this.props.displayName,
 					userType: this.props.userType,
-					coordinates: null
+					coordinates: null,
+					issueId: null
 				}			
 			},
 			componentDidMount:function(){
-				console.log('triggered once after initial render');
-
+				var that = this;
 				socket.on(this.props.userId+'-waiting-for-help', function(postData){
+					that.setState({policeDetails: postData.policeDetails, issueId: postData.issueId});
 					console.log(postData);
 				});
 			},
@@ -41,6 +42,17 @@ define(
 				//commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
 
 			},
+			closeIssue: function(){
+				var that = this;
+				var postData = {
+					issueId: that.state.issueId
+				},
+				successCallback = function(data){
+					console.log(data);
+				}.bind(this);
+
+				commonFunctions.makeAjaxPost('/help/acknowledge', postData, successCallback);	
+			},
 			getCrimeData: function(){
 				var successCallback = function(data){
 					console.log(data);
@@ -55,7 +67,7 @@ define(
 		  		var mapOptions = {
 		  			displayMaps: true, 
 		  			autocompleteInput: '#autocomplete',
-		  			autocompleteCallback: this.getCrimeData,
+		  			autocompleteCallback: this.processAddress,
 		  			latLng: [12.9759849, 77.6345852],  
 		  			zoomLevel: 8,
 		  			animateMarker: false
@@ -73,7 +85,10 @@ define(
 			    return (
 
 	 		    	<div className="wrapper" style={style3}>
-    					<HeaderBar />
+    					<HeaderBar 
+    						userId={this.state.userId} 
+    						displayName={this.state.displayName}
+    						userType={this.state.userType} />
     					
     					<div className="content-wrapper" style={style2}>
     						<section className="content-header">
@@ -85,6 +100,7 @@ define(
     								<li><a href="#"><i className="fa fa-dashboard"></i> Home</a></li>
     								<li className="active">Dashboard</li>
     							</ol>*/}
+    							<button  onClick={this.closeIssue}>End issue</button>
                                 <ControlPanel />
     						</section>
 

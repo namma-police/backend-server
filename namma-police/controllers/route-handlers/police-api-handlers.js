@@ -53,9 +53,9 @@ define(
                     }else{
 
                         var citizenDetails = {
-                            userId: req.body.citizenDetails.userId,
-                            displayName: req.body.citizenDetails.displayName,
-                            phone: req.body.citizenDetails.userId,
+                            userId: reqBody.citizenDetails.userId,
+                            displayName: reqBody.citizenDetails.displayName,
+                            phone: reqBody.citizenDetails.userId,
                             location: {
                                 address: results.two.results[0].formatted_address,
                                 coordinates: citizenCoordinates
@@ -77,9 +77,16 @@ define(
                         policeData = {
                             issueId: reqBody.issueId,
                             policeDetails: policeDetails
+                        },
+                        date = new Date(),
+
+                        statusData = {
+                            issueId: reqBody.issueId,
+                            responseTime: date.getTime(),   
                         };
+                        
                         responseCallback(citizenData, policeData);
-                        policeDbApi.updateIssueStatus(reqBody.issueId, policeDetails, function(err, result){
+                        policeDbApi.updateIssueStatus(statusData, policeDetails, function(err, result){
                             if(err){
                                 debug(err);
                             }else{

@@ -65,17 +65,17 @@ define(
 			});
 		}
 
-		exports.updateIssueStatus = function(issueId, policeDetails, callback){
+		exports.updateIssueStatus = function(statusData, policeDetails, callback){
 			mongoDBClient.collection("issuesData").update({
-				_id: new ObjectID(issueId)
+				_id: new ObjectID(statusData.issueId)
 			},{
-				$set: {policeDetails: policeDetails, status: 'engaged'}
+				$set: {policeDetails: policeDetails, status: 'engaged', responseTime: statusData.responseTime}
 			},function(err, results){
 				if(err){
 					callback(err);
 				}else{
 					var resultData = {
-						issueId: issueId,
+						issueId: statusData.issueId,
 						status: 'engaged'
 					}
 					callback(null, resultData);
