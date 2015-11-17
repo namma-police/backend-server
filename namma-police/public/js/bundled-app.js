@@ -99,7 +99,7 @@ webpackJsonp([1],[
 
 	    						React.createElement("section", {className: "content"}, 
 	    							React.createElement("div", {className: "row"}, 
-	    								React.createElement("section", {className: "col-lg-7 connectedSortable ui-sortable"}, 
+	    								React.createElement("section", {className: "col-lg-12 connectedSortable ui-sortable"}, 
 											React.createElement("div", {className: "nav-tabs-custom"}, 
 							                    /* Tabs within a box */
 							                    React.createElement("ul", {className: "nav nav-tabs pull-right ui-sortable-handle"}, 
@@ -119,11 +119,11 @@ webpackJsonp([1],[
 							                        )
 							                    )
 							                )
-	    								), 
+	    								)
 
-	                                    React.createElement("section", {className: "col-lg-5 connectedSortable ui-sortable"}, 
-	                                        React.createElement(ContainerFive, null)
-	                                    )
+	                                    /*<section className="col-lg-5 connectedSortable ui-sortable">
+	                                        <ContainerFive />
+	                                    </section>*/
 	    							)
 	    						)
 
@@ -168,7 +168,7 @@ webpackJsonp([1],[
 				pageType = documentBody.getAttribute('data-page-type');
 
 			if(pageType === ''){
-				switch(userId){
+				switch(userType){
 					case '':
 						ReactDOM.render(React.createElement(LoginPage, null), document.getElementById('componentContainer'));
 						break;
@@ -481,8 +481,8 @@ webpackJsonp([1],[
 			  			displayMaps: true, 
 			  			autocompleteInput: '#autocomplete',
 			  			autocompleteCallback: this.processAddress,
-			  			latLng: [20.594, 78.963],
-			  			zoomLevel: 4,
+			  			latLng: [12.9759849, 77.6345852],
+			  			zoomLevel: 8,
 			  			animateMarker: false
 			  		},
 			  		style1 = {
@@ -517,7 +517,7 @@ webpackJsonp([1],[
 
 	    						React.createElement("section", {className: "content"}, 
 	    							React.createElement("div", {className: "row"}, 
-	    								React.createElement("section", {className: "col-lg-7 connectedSortable ui-sortable"}, 
+	    								React.createElement("section", {className: "col-lg-12 connectedSortable ui-sortable"}, 
 											React.createElement("div", {className: "nav-tabs-custom"}, 
 							                    /* Tabs within a box */
 							                    React.createElement("ul", {className: "nav nav-tabs pull-right ui-sortable-handle"}, 
@@ -537,11 +537,11 @@ webpackJsonp([1],[
 							                        )
 							                    )
 							                )
-	    								), 
+	    								)
 
-	                                    React.createElement("section", {className: "col-lg-5 connectedSortable ui-sortable"}, 
-	                                        React.createElement(ContainerFive, null)
-	                                    )
+	                                    /*<section className="col-lg-5 connectedSortable ui-sortable">
+	                                        <ContainerFive />
+	                                    </section>*/
 	    							)
 	    						)
 
@@ -692,7 +692,7 @@ webpackJsonp([1],[
 	    								    theme: "bg-red"})
 	    							), 
 	    							React.createElement("div", {className: "row"}, 
-	    								React.createElement("section", {className: "col-lg-7 connectedSortable ui-sortable"}, 
+	    								React.createElement("section", {className: "col-lg-12 connectedSortable ui-sortable"}, 
 											React.createElement("div", {className: "nav-tabs-custom"}, 
 							                    /* Tabs within a box */
 							                    React.createElement("ul", {className: "nav nav-tabs pull-right ui-sortable-handle"}, 
@@ -712,11 +712,11 @@ webpackJsonp([1],[
 							                        )
 							                    )
 							                )
-	    								), 
+	    								)
 
-	                                    React.createElement("section", {className: "col-lg-5 connectedSortable ui-sortable"}, 
-	                                        React.createElement(ContainerFive, null)
-	                                    )
+	                                    /*<section className="col-lg-5 connectedSortable ui-sortable">
+	                                        <ContainerFive />
+	                                    </section>*/
 	    							)
 	    						)
 
@@ -1471,8 +1471,9 @@ webpackJsonp([1],[
 	                    }
 	                });
 	            });
-	            this.props.options.renderCallback();
-
+	            if(this.props.options.renderCallback){
+	                this.props.options.renderCallback();
+	            }
 	            //this.setMapBounds(options.latLng);
 	        },
 	        initializeAutocomplete: function(dom, callback){

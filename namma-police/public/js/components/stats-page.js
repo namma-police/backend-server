@@ -122,7 +122,7 @@ define(
     								    theme = 'bg-red' />
     							</div>
     							<div className="row">
-    								<section className="col-lg-7 connectedSortable ui-sortable" >
+    								<section className="col-lg-12 connectedSortable ui-sortable" >
 										<div className="nav-tabs-custom">
 						                    {/* Tabs within a box */}
 						                    <ul className="nav nav-tabs pull-right ui-sortable-handle">
@@ -144,9 +144,9 @@ define(
 						                </div>
     								</section>
 
-                                    <section className="col-lg-5 connectedSortable ui-sortable">
+                                    {/*<section className="col-lg-5 connectedSortable ui-sortable">
                                         <ContainerFive />
-                                    </section>
+                                    </section>*/}
     							</div>
     						</section>
 

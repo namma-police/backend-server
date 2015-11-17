@@ -85,8 +85,8 @@ define(
 		  			displayMaps: true, 
 		  			autocompleteInput: '#autocomplete',
 		  			autocompleteCallback: this.processAddress,
-		  			latLng: [20.594, 78.963],
-		  			zoomLevel: 4,
+		  			latLng: [12.9759849, 77.6345852],
+		  			zoomLevel: 8,
 		  			animateMarker: false
 		  		},
 		  		style1 = {
@@ -121,7 +121,7 @@ define(
 
     						<section className="content">
     							<div className="row">
-    								<section className="col-lg-7 connectedSortable ui-sortable" >
+    								<section className="col-lg-12 connectedSortable ui-sortable" >
 										<div className="nav-tabs-custom">
 						                    {/* Tabs within a box */}
 						                    <ul className="nav nav-tabs pull-right ui-sortable-handle">
@@ -143,9 +143,9 @@ define(
 						                </div>
     								</section>
 
-                                    <section className="col-lg-5 connectedSortable ui-sortable">
+                                    {/*<section className="col-lg-5 connectedSortable ui-sortable">
                                         <ContainerFive />
-                                    </section>
+                                    </section>*/}
     							</div>
     						</section>
 

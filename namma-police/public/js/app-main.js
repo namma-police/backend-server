@@ -17,7 +17,7 @@ define(
 			pageType = documentBody.getAttribute('data-page-type');
 
 		if(pageType === ''){
-			switch(userId){
+			switch(userType){
 				case '':
 					ReactDOM.render(<LoginPage />, document.getElementById('componentContainer'));
 					break;

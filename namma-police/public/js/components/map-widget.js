@@ -121,8 +121,9 @@ define(
                     }
                 });
             });
-            this.props.options.renderCallback();
-
+            if(this.props.options.renderCallback){
+                this.props.options.renderCallback();
+            }
             //this.setMapBounds(options.latLng);
         },
         initializeAutocomplete: function(dom, callback){
