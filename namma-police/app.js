@@ -78,7 +78,7 @@ requirejs(
 
 		server.listen(config.development.server_port1, function () {
 		    debug('Server running on ' + config.development.server_port1);
-		    function homeRender(req, responseCallback){
+		    function homeRender(req, pageType, responseCallback){
 		        debug('inside homeRender');
 		        var argOne = 'index',
 		            argTwo = {};
@@ -88,7 +88,8 @@ requirejs(
 		                user_id: req.session.user.userId,
 		                status: req.session.user.status,
 		                display_name: req.session.user.displayName,
-		                user_type: req.session.user.userType
+		                user_type: req.session.user.userType,
+		                page_type: pageType
 		            };                        
 		        }
 		        else {
@@ -96,7 +97,8 @@ requirejs(
 		                user_id: null,
 		                status: null,
 		                display_name: null,
-		                user_type: null
+		                user_type: null,
+		                page_type: pageType
 		            };
 		        }
 
@@ -120,7 +122,13 @@ requirejs(
 						debug(results);
 						expressInstance.get('/', function (req, res) {
 						    debug('request to /');
-						    homeRender(req, function(argOne, argTwo){
+						    homeRender(req, '', function(argOne, argTwo){
+						        res.render(argOne, argTwo);
+						    });
+						});
+						expressInstance.get('/stats', function (req, res) {
+						    debug('request to /stats');
+						    homeRender(req, 'stats', function(argOne, argTwo){
 						        res.render(argOne, argTwo);
 						    });
 						});

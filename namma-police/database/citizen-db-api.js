@@ -161,26 +161,26 @@ define(
 		}
 
 		exports.getIssues = function(callback){
-			mongoDBClient.collection("issuesData").find({},{ 
+			var collection = mongoDBClient.collection("issuesData");
+			//Using stream to process potentially millions of records
+			var stream = collection.find({},{ 
 				occurrenceTime: 1, 
 				status: 1,
 				"citizenDetails.location": 1,
 				_id: 0
-			}).toArray(function (err, results){
-				var resultData = {};
-				if(err){
-					resultData = {
-						error: err,
-						message: 'Could not fetch results'
-					};
-					callback(resultData);
-				}else{
-					var resultData = {
-						issues: results
-					};
-					callback(null, resultData);
-				}	
-			});	
+			}).stream();
+
+			var issues = [];
+
+			stream.on("data", function(item) {
+				issues.push(item); //Might need to replace this with socket.io emit
+			});
+			stream.on('end', function() {
+		      	var resultData = {
+					issues: issues
+				};
+				callback(null, resultData);
+		    });	
 		}
 	}
 );

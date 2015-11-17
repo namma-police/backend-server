@@ -1,10 +1,15 @@
 define(
 	[
 		'react',
+		'./header-bar/header-bar',
+		'./control-panel',
+		'./containers/container-one',
+		'./containers/container-five',
+		'./controls-menu',
 		'./map-widget',
 		'../common-functions'
 	],
-	function(React, MapWidget, commonFunctions){
+	function(React, HeaderBar, ControlPanel, ContainerOne, ContainerFive,ControlsMenu, MapWidget, commonFunctions){
 		var PolicePage = React.createClass({
 			getInitialState: function(){
 				return {
@@ -84,29 +89,79 @@ define(
 		  			zoomLevel: 4,
 		  			animateMarker: false
 		  		},
-		  		style = {
-		  			width: '600px',
-		  			height: '400px'
+		  		style1 = {
+		  		    position: 'relative',
+		  		    height: '300px'
+		  		},
+		  		style2 = {
+		  			marginLeft: '1px'
+		  		},
+		  		style3 = {
+		  			backgroundColor: 'white'
 		  		};
 			    return (
-			    	<div id="PolicePage">
-			    		<button id="logoutButton" onClick={this.logout}>logout</button>
-			    		<div>
-			    			user type: {this.state.userType}
-			    		</div>
-			    		<div>	
-			    			user id: {this.state.userId}
-			    		</div>
-			    		<div>
-			    			display name: {this.state.displayName}
-			    		</div>
-			    		<button id="acknowledge" onClick={this.acknowledgeRequest}>Respond</button>
-			    		<button  onClick={this.closeIssue}>End issue</button> 
-			    		<input type="text" id="autocomplete" />
-			    		<div id="map-container" style={style}>
-			    			<MapWidget options = {mapOptions} />
-			    		</div>
-	 		    	</div>
+
+	 		    	<div className="wrapper" style={style3}>
+    					<HeaderBar notificationsCallback={this.acknowledgeRequest}/>
+    					
+    					<div className="content-wrapper" style={style2}>
+    						<section className="content-header">
+    							<h1>
+    						        Dashboard
+    						       	<small>Control panel</small>
+    						    </h1>
+    							{/*<ol className="breadcrumb">
+    								<li><a href="#"><i className="fa fa-dashboard"></i> Home</a></li>
+    								<li className="active">Dashboard</li>
+    							</ol>*/}
+    							<button id="acknowledge" onClick={this.acknowledgeRequest}>Respond</button>
+    							<button  onClick={this.closeIssue}>End issue</button>
+                                <ControlPanel />
+    						</section>
+
+    						<section className="content">
+    							<div className="row">
+    								<section className="col-lg-7 connectedSortable ui-sortable" >
+										<div className="nav-tabs-custom">
+						                    {/* Tabs within a box */}
+						                    <ul className="nav nav-tabs pull-right ui-sortable-handle">
+						                        <li className=""><a href="#revenue-chart" data-toggle="tab" aria-expanded="false">Area</a></li>
+						                        <li className="active"><a href="#Map-chart" data-toggle="tab" aria-expanded="true">Donut</a></li>
+						                        <li className="pull-left header"><i className="fa fa-map-marker"></i> Map</li>
+						                    </ul>
+						                    <div className="tab-content no-padding">
+						                        {/* Morris chart - Map */}
+						                        <div className="chart tab-pane" id="revenue-chart" style={style1}>
+
+						                        </div>
+						                        <div className="chart tab-pane active" id="Map-chart" style={style1}>
+						                        	<br />
+						                        	<input type="text" id="autocomplete" />
+						                        	<MapWidget options = {mapOptions} ref='myMap'/>
+						                        </div>
+						                    </div>
+						                </div>
+    								</section>
+
+                                    <section className="col-lg-5 connectedSortable ui-sortable">
+                                        <ContainerFive />
+                                    </section>
+    							</div>
+    						</section>
+
+    					</div>
+
+                        <footer className="main-footer">
+                            <div className="pull-right hidden-xs">
+                                <b>Version</b> 1.0.0
+                            </div>
+                            <strong>A <a href="http://namma-police.github.io">Namma Police</a> initiative. </strong>
+                        </footer>
+
+                        {/*<ControlsMenu />*/}
+    				</div>
+
+
 			    );
 		  	}
 		});

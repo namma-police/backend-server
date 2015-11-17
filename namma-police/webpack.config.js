@@ -4,8 +4,11 @@
  */
 
 var webpack = require('webpack');
+var path = require("path");
+
 var lib_dir = __dirname + '/public/js/libs',
-    node_dir = __dirname + '/node_modules';
+    node_dir = __dirname + '/node_modules',
+    plugins_dir = __dirname + '/public/plugins';
    // bower_dir = __dirname + '/bower_components'
 
 var config = {
@@ -16,35 +19,40 @@ var config = {
 
     resolve: {
         alias: {
-            react: node_dir + '/react/dist/react.js',
-            jquery: lib_dir + '/jquery-1.11.2.min.js',  
+            react: lib_dir + '/react.js',
+            reactDom: lib_dir + '/react-dom',
             underscore: node_dir + '/underscore/underscore.js',
+            jquery: lib_dir + '/jQuery-2.1.4.min.js',
+            velocity: lib_dir + '/velocity.min.js',
+            jqueryUi: plugins_dir + '/jQueryUI/jquery-ui.min.js',
+            bootstrap: plugins_dir + '/bootstrap/js/bootstrap.min.js',
+            slimscroll: plugins_dir + '/slimScroll/jquery.slimscroll.min.js',
+            fastclick: plugins_dir + '/fastclick/fastclick.min.js',
         }
-    },   
+    }, 
 
     plugins: [
         new webpack.ProvidePlugin({
             jQuery: "jquery",
             'window.jQuery': "jquery",
         }),
-        new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js', Infinity),
+        new webpack.optimize.CommonsChunkPlugin('vendors', 'js/vendors.js', Infinity),
 
     ],
 
     entry: {
         app: ['./public/js/app-main'],
-        vendors: ['react','jquery','underscore']
+        vendors: ['react','reactDom','underscore','jquery','velocity','jqueryUi','bootstrap','slimscroll','fastclick']
     },
 
     output: {
-        path: './public/js',
-        filename: 'bundled-app.js'
+        path: path.join(__dirname, "public"),
+        filename: "js/bundled-app.js"
     },
     
     module: {
         noParse: [
-            new RegExp(node_dir + '/react/dist/react.js'),
-            new RegExp(lib_dir +'/jquery-1.11.2.min.js')
+            new RegExp(lib_dir + './public/libraries/react-with-addons.js')
         ],
         loaders: [
             { 

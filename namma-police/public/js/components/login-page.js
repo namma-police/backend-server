@@ -99,53 +99,93 @@ define(
 				},
 				successcallback = function(data){
 					console.log(data);
-					window.location.replace('/');
+					//window.location.replace('/');
 				}
 				commonFunctions.makeAjaxPost('/police/login', postData, successcallback);
 			},
 		  	render:function(){
-		  		var style={
-		  			top: '-200px',
-		  			left: '400px',
-		  			position: 'relative'
-		  		},
-		  		that = this;
-
+		  		var that = this;
 			    return (
-			    	<div id="loginPage">
-			    		<div id="citizenSignup">
-			    			<div>Citizen Display Name: <input type="text" id="citizenDisplayNameInput" /> </div>
-			    			<div>Citizen phone: <input type="text" id="citizenPhone" onBlur={that.verifyCitizenPhone}/></div>
-			    			<div>Citizen email: <input type="text" id="citizenEmailInput" /></div>
-			    			<div>Citizen password: <input type="password" id="citizenPassword" /></div>
-			    			<button type="submit" id="citizenSignupButton" onClick={that.registerCitizen}>Register</button>
-			    		</div>
-			    		<div id="policeSignup">
-			    			<div>Police ID: <input type="text" id="policeIdInput"  onBlur={that.verifyPoliceId}/> </div>
-			    			<div>Police display name: <input type="text" id="policeDisplayNameInput" /> </div>
-			    			<div>Police phone: <input type="text" id="policePhone" /></div>
-			    			<div>Police email: <input type="text" id="policeEmailInput" /></div>
-			    			<div>Police password: <input type="password" id="policePassword" /></div>
-			    			<button type="submit" id="policeSignupButton" onClick={that.registerPolice}> register</button>
-			    		</div>
-			    		<div style={style}>
-				    		<div id="citizenLogin">
-				    			<div>Citizen Login with phone: <input type="text" id="citizenLoginPhone" /> </div>
-				    			<div>Password: <input type="password" id="citizenLoginPassword" /> </div>
-				    			<button type="submit" id="citizenLoginButton" onClick={that.loginCitizen}>Register</button>
-				    		</div>
+			    	<div id="homePage">
+			    		<h2 id="mainHeader">Welcome to Namma-Police</h2>
+			    		
+			    		<div id="main" className="section group">
+			    			<div id="contentWrapper1" className="section group">
+					     		<div id="citizenLogin" className="column loginSection">
+					     			<h5>Existing citizen?</h5>
+					     			<h3 className="loginHeader">Login</h3>
+					     			<p className="inputClassOne">
+					     				<input className type = "text" id="citizenLoginPhone" placeholder="User-name"/>
+						     		</p>
+						     		<p className="inputClassOne">
+						     			<input type= "password" id = "citizenLoginPassword" placeholder="Password"/>
+						     		</p>
+						     		<div onClick={that.loginCitizen} className="buttonClassOne" id="citizenLoginButton">Login</div>		
+						     		<div id = "loginErrMsg"></div>
+						     	</div>
 
-				    		<div id="policeLogin">
-				    			<div>Police Login with id: <input type="text" id="policeLoginId" /> </div>
-				    			<div>Password: <input type="password" id="policeLoginPassword" /> </div>
-				    			<button type="submit" id="policeLoginButton" onClick={that.loginPolice}>Register</button>
-				    		</div>
-				    	</div>	
+			     	     		<div id="policeLogin" className="column loginSection">
+			     	     			<h5>Existing police?</h5>
+			     	     			<h3 className="loginHeader">Login</h3>
+			     		    		<p className="inputClassOne">
+			     		     			<input type = "text" id="policeLoginId" placeholder="User-name"/>
+			     		     		</p>
+			     		     		<p className="inputClassOne">
+			     		     			<input type= "password" id = "policeLoginPassword" placeholder="Password"/>
+			     		     		</p>
+			     		     		<div onClick={that.loginPolice} className="buttonClassOne" id="policeLoginButton">Login</div>		
+			     		     		<div id = "loginErrMsg"></div>
+			     		     	</div>
+			     		    </div>
+			     		    <div id="contentWrapper2" className="section group">
+					     		<div id="citizenSignup" className="column signupSection">
+					     			<h5>Are you a new citizen?</h5>
+					     			<h3 className="signupHeader">Sign Up!</h3>
+					     			<p className="inputClassOne" >
+					     				<input type="text" id="citizenDisplayNameInput" placeholder="Your full name"/>
+					     			</p>
+					     			<p className="inputClassOne" >
+					     				<input type="text" id="citizenPhone" placeholder="Enter your phone" onBlur={that.verifyCitizenPhone} />
+					     				<div id="signupNameMsg"></div>
+					     			</p>
+					     			<p className="inputClassOne" >
+					     				<input type="text" id="citizenEmailInput" placeholder="Enter your email" />
+					     				<br/><br/>
+					     				<input type="password" id="citizenPassword" placeholder="Enter your password" />
+					   					<div id="signupPwMsg"></div>
+					     			</p>
+					     			<div onClick={that.registerCitizen} className="buttonClassOne" id="citizenSignupButton">Sign Up!</div>	
+					     		</div>
+
+					     		<div id="policeSignup" className="column signupSection">
+					     			<h5>Are you a new police?</h5>
+					     			<h3 className="signupHeader">Sign Up!</h3>
+					     			<p className="inputClassOne" >
+					     				<input type="text" id="policeDisplayNameInput" placeholder="Your full name"/>
+					     			</p>
+					     			<p className="inputClassOne" >
+					     				<input type="text" id="policeIdInput" placeholder="Your ID" onBlur={that.verifyPoliceId}/>
+					     			</p>
+					     			<p className="inputClassOne" >
+					     				<input type="text" id="policePhone" placeholder="Enter your phone"/>
+					     				<div id="signupNameMsg"></div>
+					     			</p>
+					     			<p className="inputClassOne" >
+					     				<input type="text" id="policeEmailInput" placeholder="Enter your email" />
+					     				<br/><br/>
+					     				<input type="password" id="policePassword" placeholder="Enter your password" />
+					   					<div id="signupPwMsg"></div>
+					     			</p>
+					     			<div onClick={that.registerPolice} className="buttonClassOne" id="policeSignupButton">Sign Up!</div>	
+					     		</div>
+					     	</div>
+				     		<div id="bgImg"></div>
+				     		<div className="overlay"></div>
+				     	</div>	
 	 		    	</div>
 			    );
 		  	}
 		});
-
 		return LoginPage;
 	}
-);
+)

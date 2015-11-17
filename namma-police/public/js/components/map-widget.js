@@ -121,6 +121,7 @@ define(
                     }
                 });
             });
+            this.props.options.renderCallback();
 
             //this.setMapBounds(options.latLng);
         },
@@ -284,7 +285,7 @@ define(
                 maxWidth:250
             });
 
-            this.mapComponents.map.data.addListener('mouseover', function (event) { 
+            this.mapComponents.map.data.addListener('click', function (event) { 
                 var address = event.feature.getProperty('address'),
                     occurrenceTime = new Date(event.feature.getProperty('occurrenceTime')),
                     status = event.feature.getProperty('status');
@@ -292,7 +293,7 @@ define(
                 var content = '<div> <strong>Address:</strong> '+address+'</div>';
                     content += '<div><strong>Time of Occurrence:</strong> '+occurrenceTime+'</div>';
                     content+= '<div><strong>Status:</strong> '+status+'</div>';
-                    
+
                 infoWindow.setPosition(event.latLng)
                 infoWindow.setContent(content);
                 infoWindow.open(that.mapComponents.map);

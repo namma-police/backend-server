@@ -80,7 +80,7 @@ define(
 							displayName: null,
 							email: null,
 							password: null,
-							location: results.location
+							location: null
 						};
 					}
 					callback(null, resultData);
