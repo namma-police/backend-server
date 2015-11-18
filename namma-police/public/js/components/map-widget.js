@@ -17,8 +17,9 @@
 define(
     [
         'react',
-        'jquery'
-    ], function(React, $) {
+        'jquery',
+        '../map-styles'
+    ], function(React, $, mapStyles) {
     
     var MapWidget = React.createClass({
         getInitialState:function(){
@@ -62,15 +63,44 @@ define(
             
         },
         initializeMap: function(options){
+            var retrostyledMap = new google.maps.StyledMapType(mapStyles.retro,
+                {name: "Retro Map"}),
+
+                unsaturatedBrownStyledMap = new google.maps.StyledMapType(mapStyles.unsaturatedBrown,
+                {name: "Brown Map"}),
+
+                // deathByBlueStyledMap = new google.maps.StyledMapType(mapStyles.deathByBlue,
+                // {name: "Death by Blue Map"}),
+
+                midnightCommanderStyledMap = new google.maps.StyledMapType(mapStyles.midnightCommander,
+                {name: "Night Map"});
+
             this.mapComponents.latLng = new google.maps.LatLng(options.latLng[0], options.latLng[1]);
             var mapOptions = {
                 zoom: options.zoomLevel,
                 center: this.mapComponents.latLng,
                 zoomControl: true,
+                mapTypeControlOptions: {
+                    mapTypeIds: [google.maps.MapTypeId.ROADMAP,'retro_style','unsaturated_brown_style', 'midnight_commander_style']
+                }
             }
 
             this.mapComponents.geocoder = new google.maps.Geocoder(),
             this.mapComponents.map =  new google.maps.Map(document.getElementById("location-map"), mapOptions);
+
+            //Associate the styled map with the MapTypeId and set it to display.
+            this.mapComponents.map.mapTypes.set('retro_style', retrostyledMap);
+            this.mapComponents.map.mapTypes.set('unsaturated_brown_style', unsaturatedBrownStyledMap);
+            //this.mapComponents.map.mapTypes.set('death_by_blue_style', deathByBlueStyledMap);
+            this.mapComponents.map.mapTypes.set('midnight_commander_style', midnightCommanderStyledMap);
+            var currentHour = new Date().getHours();
+            if(currentHour >= 5 && currentHour < 8){
+                this.mapComponents.map.setMapTypeId('unsaturated_brown_style');
+            }else if(currentHour >=8 && currentHour < 19){
+                this.mapComponents.map.setMapTypeId('retro_style');
+            }else if(currentHour >= 19 || currentHour < 5){
+                this.mapComponents.map.setMapTypeId('midnight_commander_style');
+            }
             
             // this.adjustZoom(options.placeType[0]);
             this.initializeMarker(options);

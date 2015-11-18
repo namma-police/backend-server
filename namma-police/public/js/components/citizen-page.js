@@ -38,9 +38,11 @@ define(
 					this.setState({coordinates: postData.coordinates})
 				}.bind(this);
 				
-				commonFunctions.makeAjaxPost('/help/request', postData, successCallback);
-				//commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
-
+				if(document.getElementById('helpButton').checked){
+					commonFunctions.makeAjaxPost('/help/request', postData, successCallback);
+				}else{
+					commonFunctions.makeAjaxPost('/'+this.props.userType+'/location/update', postData, successCallback);
+				}	
 			},
 			closeIssue: function(){
 				var that = this;
@@ -94,12 +96,22 @@ define(
     						<section className="content-header">
     							<h1>
     						        Dashboard
-    						       	<small>Control panel</small>
+    						       	<small>This is only to test the APIs, use the android app</small>
     						    </h1>
     							{/*<ol className="breadcrumb">
     								<li><a href="#"><i className="fa fa-dashboard"></i> Home</a></li>
     								<li className="active">Dashboard</li>
     							</ol>*/}
+    							<label>
+    								Request help
+    								<input type="radio" id="helpButton" name="toggleOperations" value="help" readOnly/>
+    							</label>
+    							<br />
+    							<label>
+    								Update location
+    								<input type="radio" id="updateButton" name="toggleOperations" value="update" defaultChecked readOnly/>
+    							</label>
+    							<br />
     							<button  onClick={this.closeIssue}>End issue</button>
                                 <ControlPanel />
     						</section>

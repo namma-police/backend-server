@@ -112,7 +112,7 @@ define(
     						<section className="content-header">
     							<h1>
     						        Dashboard
-    						       	<small>Control panel</small>
+    						       	<small>This is only to test the APIs, use the android app</small>
     						    </h1>
     							{/*<ol className="breadcrumb">
     								<li><a href="#"><i className="fa fa-dashboard"></i> Home</a></li>
