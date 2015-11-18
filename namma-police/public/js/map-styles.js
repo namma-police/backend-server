@@ -1,5 +1,4 @@
 /**
- * Copyright Toorq Media Serivces
  * @author Ashwin Hariharan
  * @Details Styles for google maps.
  */
