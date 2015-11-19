@@ -63,7 +63,7 @@ define(
                         {/* Header Navbar: style can be found in header.less */}
                         <nav className="navbar navbar-static-top" role="navigation">
                             {/* Sidebar toggle button*/}
-                            <a href="#" className="sidebar-toggle" data-toggle="offcanvas" role="button" onClick={that.pushMenu}>
+                            <a href="#" className="sidebar-toggle" data-toggle="offcanvas" role="button">
                                 <span className="sr-only">Toggle navigation</span>
                             </a>
                             <div className="navbar-custom-menu">
