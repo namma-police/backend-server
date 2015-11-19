@@ -49,7 +49,9 @@ define(
 							case 'resolved':
 								resolvedIssues.push(crimeData);
 						}
-						responseTimes.push(crimeData.properties.responseTime - crimeData.properties.occurrenceTime);
+						if(crimeData.properties.responseTime){
+							responseTimes.push(crimeData.properties.responseTime - crimeData.properties.occurrenceTime);
+						}	
 					});
 
 					var totalResponseTime = 0, averageResponseTime;
