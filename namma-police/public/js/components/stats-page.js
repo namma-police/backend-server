@@ -21,17 +21,23 @@ define(
 					noOfCrimes: '0',
 					activeIssues: [],
 					engagedIssues: [],
-					resolvedIssues: []
+					resolvedIssues: [],
+					averageResponseTime: 0
 				}			
 			},
 			componentDidMount:function(){
 				console.log('triggered once after initial render');
 			},
+			millisToMinutesAndSeconds: function(millis) {
+			  	var minutes = Math.floor(millis / 60000);
+			  	var seconds = ((millis % 60000) / 1000).toFixed(0);
+			  	return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+			},
 			getCrimeData: function(){
 				var successCallback = function(data){
 					console.log(data);
 					this.refs.myMap.displayCrimeStats(data);
-					var activeIssues = [], engagedIssues = [], resolvedIssues = [];
+					var activeIssues = [], engagedIssues = [], resolvedIssues = [], responseTimes = [];
 					data.features.map(function(crimeData){
 						switch(crimeData.properties.status){
 							case 'active': 
@@ -42,15 +48,24 @@ define(
 								break;
 							case 'resolved':
 								resolvedIssues.push(crimeData);
-
 						}
+						responseTimes.push(crimeData.properties.responseTime - crimeData.properties.occurrenceTime);
 					});
+
+					var totalResponseTime = 0, averageResponseTime;
+					for(var i=0; i<responseTimes.length;i++){
+						totalResponseTime = totalResponseTime + responseTimes[i]
+					}
+					averageResponseTime = parseInt(totalResponseTime/responseTimes.length);
+					
+					averageResponseTime = this.millisToMinutesAndSeconds(averageResponseTime);
 
 					this.setState({
 						noOfCrimes: data.features.length,
 						activeIssues: activeIssues,
 						engagedIssues: engagedIssues,
-						resolvedIssues: resolvedIssues
+						resolvedIssues: resolvedIssues,
+						averageResponseTime: averageResponseTime
 					});
 
 				}.bind(this);
@@ -65,7 +80,7 @@ define(
 		  			autocompleteInput: '#autocomplete',
 		  			autocompleteCallback: this.getCrimeData,
 		  			latLng: [12.9759849, 77.6345852],  
-		  			zoomLevel: 8,
+		  			zoomLevel: 12,
 		  			animateMarker: false,
 		  			renderCallback: this.getCrimeData
 		  		},
@@ -106,7 +121,7 @@ define(
     								<StatTile 
     								    icon = 'fa-star' 
     								    stats = {''+this.state.noOfCrimes}
-    								    subject = 'Total crimes' 
+    								    subject = 'Reported issues' 
     								    theme = 'bg-aqua' />
     								<StatTile 
     								    icon = 'fa-trophy' 
@@ -129,14 +144,19 @@ define(
 										<div className="nav-tabs-custom">
 						                    {/* Tabs within a box */}
 						                    <ul className="nav nav-tabs pull-right ui-sortable-handle">
-						                        <li className=""><a href="#revenue-chart" data-toggle="tab" aria-expanded="false">Area</a></li>
-						                        <li className="active"><a href="#Map-chart" data-toggle="tab" aria-expanded="true">Donut</a></li>
+						                        <li className=""><a href="#revenue-chart" data-toggle="tab" aria-expanded="false">Stats</a></li>
+						                        <li className="active"><a href="#Map-chart" data-toggle="tab" aria-expanded="true">Area</a></li>
 						                        <li className="pull-left header"><i className="fa fa-map-marker"></i> Map</li>
 						                    </ul>
 						                    <div className="tab-content no-padding">
 						                        {/* Morris chart - Map */}
 						                        <div className="chart tab-pane" id="revenue-chart" style={style1}>
-
+						                        	<br /> <br />
+						                        	<StatTile 
+						                        	    icon = 'fa-clock-o' 
+						                        	    stats = {this.state.averageResponseTime+''}
+						                        	    subject = 'Average response time (in minutes)' 
+						                        	    theme = 'bg-blue' />
 						                        </div>
 						                        <div className="chart tab-pane active" id="Map-chart" style={style1}>
 						                        	<br />

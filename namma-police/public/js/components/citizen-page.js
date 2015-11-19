@@ -71,7 +71,7 @@ define(
 		  			autocompleteInput: '#autocomplete',
 		  			autocompleteCallback: this.processAddress,
 		  			latLng: [12.9759849, 77.6345852],  
-		  			zoomLevel: 8,
+		  			zoomLevel: 12,
 		  			animateMarker: false
 		  		},
 		  		style1 = {

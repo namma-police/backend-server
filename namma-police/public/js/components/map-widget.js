@@ -95,9 +95,9 @@ define(
             this.mapComponents.map.mapTypes.set('midnight_commander_style', midnightCommanderStyledMap);
             var currentHour = new Date().getHours();
             if(currentHour >= 5 && currentHour < 8){
-                this.mapComponents.map.setMapTypeId('unsaturated_brown_style');
-            }else if(currentHour >=8 && currentHour < 19){
                 this.mapComponents.map.setMapTypeId('retro_style');
+            }else if(currentHour >=8 && currentHour < 19){
+                this.mapComponents.map.setMapTypeId('unsaturated_brown_style');
             }else if(currentHour >= 19 || currentHour < 5){
                 this.mapComponents.map.setMapTypeId('midnight_commander_style');
             }

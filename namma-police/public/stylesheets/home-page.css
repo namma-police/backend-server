@@ -1,4 +1,6 @@
-
+#autocomplete {
+	width: 300px;
+}
 #componentContainer {
 	width: 100%;
 	min-height: 100%;

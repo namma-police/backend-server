@@ -202,6 +202,7 @@ define(
                             properties: {
                                 address: issueDetails.citizenDetails.location.address,
                                 occurrenceTime: issueDetails.occurrenceTime,
+                                responseTime: issueDetails.responseTime,
                                 status: issueDetails.status
                             }
                         }
