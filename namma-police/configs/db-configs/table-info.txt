@@ -10,17 +10,25 @@ policeData
 db.citizensData.find().pretty()
 
 {
-    "_id" : ObjectId("5610b705d55e4165398976a8"),
-    "userId" : "8553659345",
-    "displayName" : "ak",
-    "phone" : "8553659345",
-    "email" : "ak@toorq. com",
-    "password" : "$2a$10$hc1/TnhpidxgJ/mCEhGpdu1LWHXWIkNZ1SvTuDMbDWfTlrlYmv0UG",
+    "_id" : ObjectId("57df7db83e2214208137fe82"),
+    "userId" : "1234",
+    "displayName" : "Ashwin",
+    "phone" : "1234",
+    "email" : "ashwin01h@gmail.com",
+    "password" : "$2a$10$zyHysQgyjRgheOPB2waLuea0olecfIWEmoR8CcDIZ9DAAvQoFrpa.",
     "earnedRatings" : 5,
-    "totalRatings" : 5
+    "totalRatings" : 5,
+    "location" : {
+        "type" : "Point",
+        "address" : "SS Environs, Chellikere, 1st block, Chelekare, Kalyan Nagar, Bengaluru, Karnataka 560043, India",
+        "coordinates" : [
+            77.63997110000003,
+            13.0280047
+        ]
+    }
 }
 
-db.citizensData.find().pretty()
+db.policeData.find().pretty()
 
 {
     "_id" : ObjectId("5610efe4e18ebc3f64f5f83e"),

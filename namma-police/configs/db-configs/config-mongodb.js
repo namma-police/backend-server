@@ -1,40 +1,33 @@
-/* @author Ashwin Hariharan
+/* @author booleanhunter
  * @details Creating a single open instance of mongoDb and returning it , this single instance is used for all db operations
  */
-define(
-    [
-        'mongodb'
-    ], 
-    function(mongodb) {
-        var MongoClient, mongoDB, that = this;
+var mongodb = require('mongodb');
 
-        function configure(callback) {
-            that.MongoClient = mongodb.MongoClient,
-                Server = mongodb.Server;
-            var server = 'mongodb://localhost:27017/nammapolice';
+var MongoClient, mongoDB, that = this;
 
-            that.MongoClient.connect(server, function(err, db){
-                if(err){
-                    var error = {
-                        message: 'MongoDB connect failed',
-                        error: err
-                    }
-                    callback(error);
-                }else{
-                    that.mongoDB = db;
-                    callback(null, 'Connection with mongodb established');
-                }
-                
-            });        
+function configure(callback) {
+    that.MongoClient = mongodb.MongoClient,
+        Server = mongodb.Server;
+    var server = 'mongodb://localhost:27017/nammapolice';
+
+    that.MongoClient.connect(server, function(err, db) {
+        if (err) {
+            var error = {
+                message: 'MongoDB connect failed',
+                error: err
+            }
+            callback(error);
+        } else {
+            that.mongoDB = db;
+            callback(null, 'Connection with mongodb established');
         }
 
-        function mongoClientDB(){
-            return that.mongoDB;
-        }
+    });
+}
 
-        return {
-            configure: configure,
-            mongoClientDB: mongoClientDB
-        }
-    }
-);
+function mongoClientDB() {
+    return that.mongoDB;
+}
+
+exports.configure = configure;
+exports.mongoClientDB = mongoClientDB;
