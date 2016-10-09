@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang = "en">
+	<head>
+		<meta charset = "utf-8"/>
+		<title>Namma Police</title>
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+		name="viewport">
+		<link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
+		<link rel="stylesheet" type="text/css" href="/stylesheets/home-page.css" />
+
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<!-- Theme style -->
+		<link rel="stylesheet" href="stylesheets/AdminLTE.min.css">
+		<!-- AdminLTE Skins. Choose a skin from the css/skins
+		 folder instead of downloading all of them to reduce the load. -->
+		<link rel="stylesheet" href="stylesheets/skins/skin-blue.min.css">
+	</head>
+	<body 
+		data-userid="<%= user_id %>" 
+		data-status="<%= status %>" 
+		data-display-name="<%= display_name %>" 
+		data-user-type="<%= user_type %>" 
+		data-page-type="<%= page_type %>"
+		class="skin-blue sidebar-mini wysihtml5-supported">
+
+		<!--<h2 id="mainHeader">Welcome to Namma-Police</h2>-->
+		<div id="componentContainer">
+		</div>
+	</body>
+	<style type="text/css">
+		#location-map{
+			height:400px;
+		}
+	</style>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+	  var socket = io();
+	</script>
+	<script src="/js/libs/script.js"></script>
+	<script src="/js/dist/vendors.js"></script>
+	<script type="text/javascript" src="/js/dist/app.bundle.js"></script>
+
+<!-- 	<script src="http://localhost:8080/js/dist/vendors.js"></script>
+	<script type="text/javascript" src="http://localhost:8080/js/dist/app.bundle.js"></script> -->
+</html>	
