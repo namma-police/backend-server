@@ -6,7 +6,13 @@ var redis = require('redis');
 var redisClient, that = this;
 
 function configure(callback) {
-    redisClient = redis.createClient();
+	var redisip = 'localhost';
+
+	if(process.argv.indexOf("-redisip") != -1){ //does our flag exist?
+	    redisip = process.argv[process.argv.indexOf("-redisip") + 1]; //grab the next item
+	}
+
+    redisClient = redis.createClient(6379, redisip);
     callback(null, 'connection with redis established');
 }
 

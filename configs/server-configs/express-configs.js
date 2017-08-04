@@ -21,12 +21,7 @@ function configure() {
         consolidate = require('consolidate'),
         debug = require('debug')('nammapolice:express-configs');
 
-    var expressInstance = express(),
-        options = {
-            db: 2,
-            client: redis.createClient(),
-            ttl: 60 * 60 * 24 * 365
-        };
+    var expressInstance = express();
 
     expressInstance.disable('x-powered-by');
 
@@ -47,15 +42,24 @@ function configure() {
 
     expressInstance.use(busboy());
 
-    expressInstance.use(expressSession({
-        secret: 'ashwinhariharanapp',
-        store: new RedisStore({
-            db: 2
-        }),
-        saveUninitialized: true,
-        resave: true
-    }));
+    var redisip = 'localhost';
 
+    if(process.argv.indexOf("-redisip") != -1){ //does our flag exist?
+        redisip = process.argv[process.argv.indexOf("-redisip") + 1]; //grab the next item
+    }
+    console.log(redisip);
+    expressInstance.use(expressSession({ //4
+        store: new RedisStore({
+            host: redisip,
+            port: 6379,
+            db: 2,
+            ttl: 60 * 60 * 24 * 365
+        }),
+        secret: 'booleanhunter',
+        resave: true,
+        saveUninitialized: true
+    }));
+    
     // expressInstance.use(expressSession({
     //     store: new MongoStore({
     //                 host: 'localhost', // Default, optional
